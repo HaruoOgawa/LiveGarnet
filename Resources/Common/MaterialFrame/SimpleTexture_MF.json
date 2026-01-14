@@ -1,0 +1,153 @@
+{
+  "name": "simple_texture_mat",
+  "blendtype" : "transparent",
+  "shaderList": [
+    {
+      "name": "minimum_vert",
+      "shaderFile": "Resources\\Common\\Shaders\\minimum",
+      "autoShaderExtension": true,
+      "shadercode": "",
+      "shaderType": "vertex",
+      "uniformBlockList": [
+        {
+          "name": "UniformBufferObject",
+          "binding": 0,
+          "isWritable": false,
+          "type": "ubo",
+          "bufferUpdateType": "cpu",
+          "values": [
+            {
+              "name": "model",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "view",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "proj",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "lightVPMat",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "cameraPos",
+              "type": "vec4",
+              "initValue": [ 0.0, 0.0, 0.0, 0.0 ],
+              "input": {
+                "hide": true
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unlit_frag",
+      "shaderFile": "Resources\\Common\\Shaders\\unlit",
+      "autoShaderExtension": true,
+      "shadercode": "",
+      "shaderType": "fragment",
+      "uniformBlockList": [
+        {
+          "name": "FragBufferObject_0",
+          "binding": 1,
+          "isWritable": false,
+          "type": "ubo",
+          "bufferUpdateType": "cpu",
+          "values": [
+            {
+              "name": "useDirSampling",
+              "type": "int",
+              "initValue": [ 0 ]
+            },
+            {
+              "name": "time",
+              "type": "float",
+              "initValue": [ 0.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "useTexColor",
+              "type": "int",
+              "initValue": [ 0 ]
+            },
+            {
+              "name": "useColor",
+              "type": "int",
+              "initValue": [ 0 ]
+            },
+            {
+              "name": "baseColor",
+              "type": "vec4",
+              "initValue": [ 1.0, 1.0, 1.0, 1.0 ],
+              "input": {
+                "type": "color"
+              }
+            },
+            {
+              "name": "mPad0",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad1",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad2",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad3",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            }
+          ]
+        },
+        {
+          "name": "texImage",
+          "viewBinding": 2,
+          "samplerBinding": 3,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "2d"
+        }
+      ]
+    }
+  ]
+}

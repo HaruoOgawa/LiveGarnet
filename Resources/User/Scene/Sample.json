@@ -1,0 +1,390 @@
+{
+    "materialframes": [
+        {
+            "name": "pbr_mat",
+            "filename": "Resources\\Common\\MaterialFrame\\PBR_MF.json"
+        }
+    ],
+    "objects": [
+        {
+            "name": "ForegroundObjList_A",
+            "filename": "",
+            "renderpasslist": [
+                "MainResultPass"
+            ],
+            "transform": {
+                "pos": [
+                    0.0,
+                    -2.0,
+                    0.0
+                ],
+                "rotate": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "enable": true,
+            "rootnodes": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6
+            ],
+            "nodes": [
+                {
+                    "name": "obj0",
+                    "transform": {
+                        "pos": [
+                            3.0,
+                            0.5,
+                            0.0
+                        ],
+                        "rotate": [
+                            0.0,
+                            30.000001907348633,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            2.0,
+                            1.0
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 0
+                },
+                {
+                    "name": "obj1",
+                    "transform": {
+                        "pos": [
+                            1.5,
+                            0.5,
+                            2.5980000495910645
+                        ],
+                        "rotate": [
+                            0.0,
+                            -0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 1
+                },
+                {
+                    "name": "obj2",
+                    "transform": {
+                        "pos": [
+                            -1.5,
+                            0.0,
+                            2.5980000495910645
+                        ],
+                        "rotate": [
+                            0.0,
+                            -20.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 0
+                },
+                {
+                    "name": "obj3",
+                    "transform": {
+                        "pos": [
+                            0.0,
+                            -0.5,
+                            0.0
+                        ],
+                        "rotate": [
+                            -90.0,
+                            0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            100.0,
+                            100.0,
+                            100.0
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": -1
+                },
+                {
+                    "name": "obj4",
+                    "transform": {
+                        "pos": [
+                            -3.0,
+                            0.5,
+                            0.0
+                        ],
+                        "rotate": [
+                            0.0,
+                            -0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            0.8999999761581421,
+                            0.8999999761581421,
+                            0.8999999761581421
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 3
+                },
+                {
+                    "name": "obj5",
+                    "transform": {
+                        "pos": [
+                            -1.5,
+                            0.0,
+                            -2.5980000495910645
+                        ],
+                        "rotate": [
+                            0.0,
+                            -0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.0,
+                            1.0
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 4
+                },
+                {
+                    "name": "obj6",
+                    "transform": {
+                        "pos": [
+                            1.5,
+                            0.0,
+                            -2.5980000495910645
+                        ],
+                        "rotate": [
+                            0.0,
+                            -0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            0.5,
+                            0.5,
+                            0.5
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 5
+                }
+            ],
+            "meshs": [
+                {
+                    "primitives": [
+                        {
+                            "type": "cube"
+                        }
+                    ]
+                },
+                {
+                    "primitives": [
+                        {
+                            "type": "sphere"
+                        }
+                    ]
+                },
+                {
+                    "primitives": [
+                        {
+                            "type": "board"
+                        }
+                    ]
+                },
+                {
+                    "primitives": [
+                        {
+                            "type": "sphere"
+                        }
+                    ]
+                },
+                {
+                    "primitives": [
+                        {
+                            "type": "cube"
+                        }
+                    ]
+                },
+                {
+                    "primitives": [
+                        {
+                            "type": "sphere"
+                        }
+                    ]
+                }
+            ],
+            "materials": [
+                {
+                    "meshindex": 0,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back"
+                },
+                {
+                    "meshindex": 1,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back"
+                },
+                {
+                    "meshindex": 2,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "none"
+                },
+                {
+                    "meshindex": 3,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back"
+                },
+                {
+                    "meshindex": 4,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back"
+                },
+                {
+                    "meshindex": 5,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back"
+                }
+            ]
+        },
+        {
+            "name": "ForegroundObjList_B",
+            "filename": "",
+            "renderpasslist": [
+                "MainResultPass"
+            ],
+            "transform": {
+                "pos": [
+                    0.0,
+                    0.0,
+                    0.0
+                ],
+                "rotate": [
+                    0.0,
+                    -0.0,
+                    0.0
+                ],
+                "scale": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            },
+            "enable": true,
+            "rootnodes": [
+                0
+            ],
+            "nodes": [
+                {
+                    "name": "obj0",
+                    "transform": {
+                        "pos": [
+                            0.0,
+                            -2.0,
+                            0.0
+                        ],
+                        "rotate": [
+                            0.0,
+                            -0.0,
+                            0.0
+                        ],
+                        "scale": [
+                            1.0,
+                            1.25,
+                            1.0
+                        ]
+                    },
+                    "enable": true,
+                    "meshindex": 0
+                }
+            ],
+            "meshs": [
+                {
+                    "primitives": [
+                        {
+                            "type": "cube"
+                        }
+                    ]
+                }
+            ],
+            "materials": [
+                {
+                    "meshindex": 0,
+                    "primitiveindex": 0,
+                    "materialframe": "pbr_mat",
+                    "cull": "back",
+                    "uniformvalues": [
+                        {
+                            "name": "ambientColor",
+                            "type": "vec4",
+                            "value": [
+                                0.0,
+                                0.0,
+                                0.0,
+                                0.6352941393852234
+                            ]
+                        }
+                    ],
+                    "textures": [
+                        {
+                            "texturebuffername": "cubemapTexture",
+                            "textureindex": -1,
+                            "texturename": ""
+                        },
+                        {
+                            "texturebuffername": "shadowmapTexture",
+                            "textureindex": -1,
+                            "texturename": ""
+                        },
+                        {
+                            "texturebuffername": "IBL_Diffuse_Texture",
+                            "textureindex": -1,
+                            "texturename": ""
+                        },
+                        {
+                            "texturebuffername": "IBL_Specular_Texture",
+                            "textureindex": -1,
+                            "texturename": ""
+                        },
+                        {
+                            "texturebuffername": "IBL_GGXLUT_Texture",
+                            "textureindex": -1,
+                            "texturename": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

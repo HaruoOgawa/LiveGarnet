@@ -1,0 +1,269 @@
+{
+  "name": "DirectionalLight",
+  "outputcolorcount": 1,
+  "shaderList": [
+    {
+      "name": "renderboard_vert",
+      "shaderFile": "Resources\\Common\\Shaders\\renderboard",
+      "autoShaderExtension": true,
+      "shadercode": "",
+      "shaderType": "vertex",
+      "uniformBlockList": []
+    },
+    {
+      "name": "GBuffer_Light_frag",
+      "shaderFile": "Resources\\Common\\Shaders\\GBuffer_Light",
+      "autoShaderExtension": true,
+      "shadercode": "",
+      "shaderType": "fragment",
+      "uniformBlockList": [
+        {
+          "name": "LightUniformBuffer",
+          "binding": 1,
+          "isWritable": false,
+          "type": "ubo",
+          "bufferUpdateType": "cpu",
+          "values": [
+            {
+              "name": "lightVPMat",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad1",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad2",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mPad3",
+              "type": "mat4",
+              "initValue": [ 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "type",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "radius",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "intensity",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+              }
+            },
+            {
+              "name": "angle",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "height",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "mipCount",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "ShadowMapX",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "ShadowMapY",
+              "type": "float",
+              "initValue": [ 1.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "useIBL",
+              "type": "int",
+              "initValue": [ 0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "useShadowMap",
+              "type": "int",
+              "initValue": [ 0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "ForceLighting",
+              "type": "int",
+              "initValue": [ 0 ],
+              "input": {
+              }
+            },
+            {
+              "name": "iPad2",
+              "type": "int",
+              "initValue": [ 0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "dir",
+              "type": "vec4",
+              "initValue": [ 2.358, -15.6, 0.59, 0.0 ],
+              "input": {
+              }
+            },
+            {
+              "name": "pos",
+              "type": "vec4",
+              "initValue": [ -2.358, 15.6, -0.59, 0.0 ],
+              "input": {
+                "hide": true
+              }
+            },
+            {
+              "name": "color",
+              "type": "vec4",
+              "initValue": [ 1.0, 1.0, 1.0, 1.0 ],
+              "input": {
+                "type": "color"
+              }
+            },
+            {
+              "name": "cameraPos",
+              "type": "vec4",
+              "initValue": [ 0.0, 0.0, 0.0, 0.0 ],
+              "input": {
+                "hide": true
+              }
+            }
+          ]
+        },
+        {
+          "name": "gPositionTexture",
+          "viewBinding": 2,
+          "samplerBinding": 3,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "gNormalTexture",
+          "viewBinding": 4,
+          "samplerBinding": 5,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "gAlbedoTexture",
+          "viewBinding": 6,
+          "samplerBinding": 7,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "gDepthTexture",
+          "viewBinding": 8,
+          "samplerBinding": 9,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "gCustomParam0Texture",
+          "viewBinding": 10,
+          "samplerBinding": 11,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "gEmissionTexture",
+          "viewBinding": 12,
+          "samplerBinding": 13,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        },
+        {
+          "name": "IBL_Diffuse_Texture",
+          "viewBinding": 14,
+          "samplerBinding": 15,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "diffuse"
+        },
+        {
+          "name": "IBL_Specular_Texture",
+          "viewBinding": 16,
+          "samplerBinding": 17,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "specular"
+        },
+        {
+          "name": "IBL_GGXLUT_Texture",
+          "viewBinding": 18,
+          "samplerBinding": 19,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "ggx"
+        },
+        {
+          "name": "shadowmapTexture",
+          "viewBinding": 20,
+          "samplerBinding": 21,
+          "textureIndex": -1,
+          "type": "texture",
+          "textureUsage": "frame"
+        }
+      ]
+    }
+  ]
+}
