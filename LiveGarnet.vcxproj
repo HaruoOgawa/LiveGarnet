@@ -385,14 +385,16 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_GLFW;USE_OPENGL;NOMINMAX;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_GLFW;USE_OPENGL;NOMINMAX;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;CSM_TARGET_WIN_GL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Garnet\Garnet\Src;..\Garnet\Garnet\Src\Library\glm;..\Garnet\Garnet\Src\Library\imgui\backends;..\Garnet\Garnet\Src\Library\imgui;..\Garnet\Garnet\Src\Library\json;..\Garnet\Garnet\src\Library\GLFW\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Garnet\Garnet\Src;..\Garnet\Garnet\Src\Library\glm;..\Garnet\Garnet\Src\Library\imgui\backends;..\Garnet\Garnet\Src\Library\imgui;..\Garnet\Garnet\Src\Library\json;..\Garnet\Garnet\src\Library\GLFW\include;$(ProjectDir)Src\Library\Live2D\Core\include;$(ProjectDir)Src\Library\Live2D\Framework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(ProjectDir)Src\Library\Live2D\Core\lib\windows\x86_64\143;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Live2DCubismCore_MDd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\NDI\Bin\x64\Processing.NDI.Lib.x64.dll $(TargetDir) /y /s /I</Command>
@@ -463,7 +465,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;USE_OPENGL;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;USE_OPENGL;NOMINMAX;CSM_TARGET_WIN_GL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\Garnet\Garnet\Src;..\Garnet\Garnet\Src\Library\glm;..\Garnet\Garnet\Src\Library\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -502,6 +504,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Live2D\CLive2DEngine.cpp" />
     <ClCompile Include="Src\App\ScriptApp\CScriptApp.cpp" />
     <ClCompile Include="Src\GUIApp\GUI\C3DView.cpp" />
     <ClCompile Include="Src\GUIApp\GUI\CGraphicsEditingWindow.cpp" />
@@ -518,9 +521,49 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile Include="Src\GUIApp\GUI\CGUIResourcesTab.cpp" />
     <ClCompile Include="Src\GUIApp\GUI\CTimeLineView.cpp" />
     <ClCompile Include="Src\GUIApp\Model\CFileModifier.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\CubismCdiJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\CubismDefaultParameterId.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\CubismFramework.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\CubismModelSettingJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Effect\CubismBreath.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Effect\CubismEyeBlink.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Effect\CubismPose.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Id\CubismId.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Id\CubismIdManager.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismMath.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismMatrix44.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismModelMatrix.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismTargetPoint.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismVector2.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Math\CubismViewMatrix.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Model\CubismMoc.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Model\CubismModel.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Model\CubismModelUserData.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Model\CubismModelUserDataJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Model\CubismUserModel.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\ACubismMotion.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismExpressionMotion.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismExpressionMotionManager.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismMotion.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionManager.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionQueueEntry.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionQueueManager.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Physics\CubismPhysics.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Physics\CubismPhysicsJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Rendering\CubismRenderer.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismOffscreenSurface_OpenGLES2.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismRenderer_OpenGLES2.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismShader_OpenGLES2.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Type\csmRectF.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Type\csmString.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Utils\CubismDebug.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Utils\CubismJson.cpp" />
+    <ClCompile Include="Src\Library\Live2D\Framework\src\Utils\CubismString.cpp" />
     <ClCompile Include="Src\Main\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Live2D\CLive2DEngine.h" />
     <ClInclude Include="Src\App\ScriptApp\CScriptApp.h" />
     <ClInclude Include="Src\GUIApp\GUI\C3DView.h" />
     <ClInclude Include="Src\GUIApp\GUI\CGraphicsEditingWindow.h" />
@@ -538,6 +581,57 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClInclude Include="Src\GUIApp\GUI\CTimeLineView.h" />
     <ClInclude Include="Src\GUIApp\GUI\SGUIParams.h" />
     <ClInclude Include="Src\GUIApp\Model\CFileModifier.h" />
+    <ClInclude Include="Src\Library\Live2D\Core\include\Live2DCubismCore.h" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismCdiJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismDefaultParameterId.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismFramework.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismFrameworkConfig.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismJsonHolder.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\CubismModelSettingJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Effect\CubismBreath.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Effect\CubismEyeBlink.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Effect\CubismPose.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\ICubismAllocator.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\ICubismModelSetting.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Id\CubismId.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Id\CubismIdManager.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Live2DCubismCore.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismMath.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismMatrix44.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismModelMatrix.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismTargetPoint.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismVector2.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Math\CubismViewMatrix.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Model\CubismMoc.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Model\CubismModel.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Model\CubismModelUserData.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Model\CubismModelUserDataJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Model\CubismUserModel.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\ACubismMotion.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismExpressionMotion.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismExpressionMotionManager.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotion.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionInternal.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionManager.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionQueueEntry.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Motion\CubismMotionQueueManager.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Physics\CubismPhysics.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Physics\CubismPhysicsInternal.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Physics\CubismPhysicsJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Rendering\CubismClippingManager.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Rendering\CubismRenderer.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismOffscreenSurface_OpenGLES2.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismRenderer_OpenGLES2.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Rendering\OpenGL\CubismShader_OpenGLES2.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Type\csmMap.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Type\csmRectF.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Type\csmString.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Type\csmVector.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Type\CubismBasicType.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Utils\CubismDebug.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Utils\CubismJson.hpp" />
+    <ClInclude Include="Src\Library\Live2D\Framework\src\Utils\CubismString.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Commands\CompileGLSLToSpirV.bat" />

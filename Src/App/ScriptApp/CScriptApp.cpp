@@ -19,6 +19,7 @@
 
 #include "../../GUIApp/GUI/CGraphicsEditingWindow.h"
 #include "../../GUIApp/Model/CFileModifier.h"
+#include "../../Live2D/CLive2DEngine.h"
 
 namespace app
 {
