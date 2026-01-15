@@ -26,8 +26,9 @@
 #endif
 
 #if defined(CSM_TARGET_WIN_GL) || defined(CSM_TARGET_LINUX_GL)
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <GraphicsAPI/OpenGL/glDef.h>
+ //#include <GL/glew.h>
+//#include <GL/gl.h>
 #endif
 
 #ifdef CSM_TARGET_MAC_GL

@@ -30,8 +30,9 @@
 #endif
 
 #if defined(CSM_TARGET_WIN_GL) || defined(CSM_TARGET_LINUX_GL)
-#include <GL/glew.h>
-#include <GL/gl.h>
+#include <GraphicsAPI/OpenGL/glDef.h>
+ //#include <GL/glew.h>
+ //#include <GL/gl.h>
 #endif
 
 #ifdef CSM_TARGET_MAC_GL
@@ -362,7 +363,7 @@ private:
     /**
      * @brief   Windows対応。OpenGL命令のバインドする際に関数ポインタを取得する。
      */
-    void* WinGlGetProcAddress(const csmChar* name);
+    //void* WinGlGetProcAddress(const csmChar* name);
 
     /**
      * @brief   Windows対応。OpenGLのエラーチェック。

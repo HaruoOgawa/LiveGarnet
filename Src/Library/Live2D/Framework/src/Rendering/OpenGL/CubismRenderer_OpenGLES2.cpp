@@ -203,7 +203,7 @@ void CubismRendererProfile_OpenGLES2::Save()
     glGetIntegerv(GL_CURRENT_PROGRAM, &_lastProgram);
 
     glGetIntegerv(GL_ACTIVE_TEXTURE, &_lastActiveTexture);
-    glActiveTexture(GL_TEXTURE1); //テクスチャユニット1をアクティブに（以後の設定対象とする）
+    glActiveTexture(GL_TEXTURE0 + 1); //テクスチャユニット1をアクティブに（以後の設定対象とする）
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &_lastTexture1Binding2D);
 
     glActiveTexture(GL_TEXTURE0); //テクスチャユニット0をアクティブに（以後の設定対象とする）
@@ -258,7 +258,7 @@ void CubismRendererProfile_OpenGLES2::Restore()
     glBindBuffer(GL_ARRAY_BUFFER, _lastArrayBufferBinding); //前にバッファがバインドされていたら破棄する必要がある
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _lastElementArrayBufferBinding);
 
-    glActiveTexture(GL_TEXTURE1); //テクスチャユニット1を復元
+    glActiveTexture(GL_TEXTURE0 + 1); //テクスチャユニット1を復元
     glBindTexture(GL_TEXTURE_2D, _lastTexture1Binding2D);
 
     glActiveTexture(GL_TEXTURE0); //テクスチャユニット0を復元
@@ -290,7 +290,7 @@ void CubismRenderer_OpenGLES2::ReloadShader()
 
 #ifdef CSM_TARGET_WIN_GL
 
-namespace {
+/*namespace {
 PFNGLACTIVETEXTUREPROC glActiveTexture;
 PFNGLBINDBUFFERPROC glBindBuffer;
 PFNGLUSEPROGRAMPROC glUseProgram;
@@ -339,11 +339,12 @@ PFNGLGETVERTEXATTRIBIVPROC glGetVertexAttribiv;
 
 csmBool s_isInitializeGlFunctionsSuccess = false;     ///< 初期化が完了したかどうか。trueなら初期化完了
 csmBool s_isFirstInitializeGlFunctions = true;        ///< 最初の初期化実行かどうか。trueなら最初の初期化実行
-}
+}*/
 
 void CubismRenderer_OpenGLES2::InitializeGlFunctions()
 {
-    if (!s_isFirstInitializeGlFunctions) return;
+    // GL関数初期化はGarnetで行っているのでここでは無視
+    /*if (!s_isFirstInitializeGlFunctions) return;
 
     s_isInitializeGlFunctionsSuccess = true; //失敗した場合にフラグをfalseにする
 
@@ -394,10 +395,10 @@ void CubismRenderer_OpenGLES2::InitializeGlFunctions()
     glRenderbufferStorage = (PFNGLRENDERBUFFERSTORAGEEXTPROC)WinGlGetProcAddress("glRenderbufferStorage");
     glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFEREXTPROC)WinGlGetProcAddress("glFramebufferRenderbuffer");
     glCheckFramebufferStatus = (PFNGLCHECKFRAMEBUFFERSTATUSEXTPROC)WinGlGetProcAddress("glCheckFramebufferStatus");
-    glGetVertexAttribiv = (PFNGLGETVERTEXATTRIBIVPROC)WinGlGetProcAddress("glGetVertexAttribiv");
+    glGetVertexAttribiv = (PFNGLGETVERTEXATTRIBIVPROC)WinGlGetProcAddress("glGetVertexAttribiv");*/
 }
 
-void* CubismRenderer_OpenGLES2::WinGlGetProcAddress(const csmChar* name)
+/*void* CubismRenderer_OpenGLES2::WinGlGetProcAddress(const csmChar* name)
 {
     void* ptr = wglGetProcAddress(name);
     if (ptr == NULL)
@@ -406,7 +407,7 @@ void* CubismRenderer_OpenGLES2::WinGlGetProcAddress(const csmChar* name)
         s_isInitializeGlFunctionsSuccess = false;
     }
     return ptr;
-}
+}*/
 
 void CubismRenderer_OpenGLES2::CheckGlError(const csmChar* message)
 {
@@ -500,8 +501,8 @@ void CubismRenderer_OpenGLES2::Initialize(CubismModel* model, csmInt32 maskBuffe
 void CubismRenderer_OpenGLES2::PreDraw()
 {
 #ifdef CSM_TARGET_WIN_GL
-    if (s_isFirstInitializeGlFunctions) InitializeGlFunctions();
-    if (!s_isInitializeGlFunctionsSuccess) return;
+    //if (s_isFirstInitializeGlFunctions) InitializeGlFunctions();
+    //if (!s_isInitializeGlFunctionsSuccess) return;
 #endif
 
     glDisable(GL_SCISSOR_TEST);
@@ -654,7 +655,7 @@ void CubismRenderer_OpenGLES2::DrawMeshOpenGL(const CubismModel& model, const cs
 {
 
 #ifdef CSM_TARGET_WIN_GL
-    if (s_isFirstInitializeGlFunctions) return;  // WindowsプラットフォームではGL命令のバインドを済ませておく必要がある
+    //if (s_isFirstInitializeGlFunctions) return;  // WindowsプラットフォームではGL命令のバインドを済ませておく必要がある
 #endif
 
 #ifndef CSM_DEBUG
