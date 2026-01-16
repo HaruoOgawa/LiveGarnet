@@ -25,6 +25,7 @@ namespace app
 {
 	CScriptApp::CScriptApp() :
 		m_SceneController(std::make_shared<scene::CSceneController>()),
+		m_Live2DEngine(std::make_shared<livegarnet::CLive2DEngine>()),
 		m_CameraSwitchToggle(true),
 		m_MainCamera(nullptr),
 #ifdef USE_VIEWER_CAMERA
@@ -68,6 +69,8 @@ namespace app
 		
 		m_MainFrameRenderer = std::make_shared<graphics::CFrameRenderer>(pGraphicsAPI, "", pGraphicsAPI->FindOffScreenRenderPass("MainResultPass")->GetFrameTextureList());
 		if (!m_MainFrameRenderer->Create(pLoadWorker, "Resources\\Common\\MaterialFrame\\FrameTexture_MF.json")) return false;
+
+		if (!m_Live2DEngine->Initialize()) return false;
 
 		return true;
 	}
@@ -115,6 +118,8 @@ namespace app
 
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
 
+		if (!m_Live2DEngine->Update()) return false;
+
 		return true;
 	}
 
@@ -138,6 +143,7 @@ namespace app
 		// MainResultPass(フォアグラウンドレンダリング)
 		{
 			if (!pGraphicsAPI->BeginRender("MainResultPass")) return false;
+			if (!m_Live2DEngine->Draw()) return false;
 			if (!m_SceneController->Draw(pGraphicsAPI, m_MainCamera, m_Projection, m_DrawInfo)) return false;
 			if (!pGraphicsAPI->EndRender()) return false;
 		}
