@@ -504,6 +504,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Live2D\CLive2DModel.cpp" />
     <ClCompile Include="Src\Live2D\CLive2DMemoryAllocator.cpp" />
     <ClCompile Include="Src\Live2D\CLive2DEngine.cpp" />
     <ClCompile Include="Src\App\ScriptApp\CScriptApp.cpp" />
@@ -564,6 +565,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile Include="Src\Main\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Live2D\CLive2DModel.h" />
     <ClInclude Include="Src\Live2D\CLive2DMemoryAllocator.h" />
     <ClInclude Include="Src\Live2D\CLive2DEngine.h" />
     <ClInclude Include="Src\App\ScriptApp\CScriptApp.h" />

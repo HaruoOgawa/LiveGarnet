@@ -1,15 +1,22 @@
 #include "CLive2DEngine.h"
 #include <Message/Console.h>
+#include "CLive2DModel.h"
 
 namespace livegarnet
 {
 	CLive2DEngine::CLive2DEngine():
+		m_CubismOption(),
 		m_CubismAllocator(CLive2DMemoryAllocator())
 	{
 	}
 
 	CLive2DEngine::~CLive2DEngine()
 	{
+		// 必ず先にモデルをリリース
+		m_ModelMap.clear();
+
+		// CubismFrameworkの破棄
+		Csm::CubismFramework::Dispose();
 	}
 
 	void CLive2DEngine::PrintMessage(const Csm::csmChar* message)
@@ -39,6 +46,16 @@ namespace livegarnet
 
 	bool CLive2DEngine::Draw()
 	{
+		return true;
+	}
+
+	bool CLive2DEngine::LoadModel(const std::string& name, const std::string& model3Path)
+	{
+		std::shared_ptr<CLive2DModel> model = std::make_shared<CLive2DModel>();
+		if (!model->Load(model3Path)) return false;
+
+		m_ModelMap.emplace(name, model);
+
 		return true;
 	}
 }
