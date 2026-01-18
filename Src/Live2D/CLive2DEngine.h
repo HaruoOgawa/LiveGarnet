@@ -6,6 +6,8 @@
 #include <map>
 #include "CLive2DMemoryAllocator.h"
 
+namespace api { class IGraphicsAPI; }
+
 namespace livegarnet
 {
 	class CLive2DModel;
@@ -33,6 +35,6 @@ namespace livegarnet
 		bool Draw();
 
 		// Šeƒ‚ƒfƒ‹ŠÖŒW
-		bool LoadModel(const std::string& name, const std::string& model3Path);
+		bool LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path);
 	};
 }

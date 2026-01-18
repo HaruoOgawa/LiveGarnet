@@ -6,24 +6,30 @@
 #include <ICubismModelSetting.hpp>
 #include <Model/CubismUserModel.hpp>
 
+using namespace Csm;
+
+namespace api { class IGraphicsAPI; }
+
 namespace livegarnet
 {
-	class CLive2DModel
+	class CLive2DRenderer;
+
+	class CLive2DModel : public CubismUserModel
 	{
 		// モデル設定
-		std::shared_ptr<Csm::ICubismModelSetting> m_ModelSetting;
+		std::shared_ptr<ICubismModelSetting> m_ModelSetting;
 
-		// モデル本体
-		std::shared_ptr<Csm::CubismUserModel> m_UserModel;
+		// レンダラー
+		std::unique_ptr<CLive2DRenderer> m_Renderer;
 
 	private:
-		bool LoadMoc3(const std::string& Directory);
-
+		bool LoadMoc3(api::IGraphicsAPI* pGraphicsAPI, const std::string& Directory);
+		
 	public:
 		CLive2DModel();
 		virtual ~CLive2DModel();
 
-		bool Load(const std::string& model3Path);
+		bool Load(api::IGraphicsAPI* pGraphicsAPI, const std::string& model3Path);
 		bool Update();
 		bool Draw();
 	};

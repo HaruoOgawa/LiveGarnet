@@ -73,7 +73,7 @@ namespace app
 		if (!m_Live2DEngine->Initialize()) return false;
 
 		// Live2Dƒ‚ƒfƒ‹ƒ[ƒh
-		if (!m_Live2DEngine->LoadModel("Haru", "Resources/User/Live2D/Haru/Haru.model3.json")) return false;
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json")) return false;
 
 		return true;
 	}

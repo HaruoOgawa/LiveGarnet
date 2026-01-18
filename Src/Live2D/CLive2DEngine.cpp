@@ -41,18 +41,28 @@ namespace livegarnet
 
 	bool CLive2DEngine::Update()
 	{
+		for (auto& Model : m_ModelMap)
+		{
+			if (!Model.second->Update()) return false;
+		}
+
 		return true;
 	}
 
 	bool CLive2DEngine::Draw()
 	{
+		for (auto& Model : m_ModelMap)
+		{
+			if (!Model.second->Draw()) return false;
+		}
+
 		return true;
 	}
 
-	bool CLive2DEngine::LoadModel(const std::string& name, const std::string& model3Path)
+	bool CLive2DEngine::LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path)
 	{
 		std::shared_ptr<CLive2DModel> model = std::make_shared<CLive2DModel>();
-		if (!model->Load(model3Path)) return false;
+		if (!model->Load(pGraphicsAPI, model3Path)) return false;
 
 		m_ModelMap.emplace(name, model);
 
