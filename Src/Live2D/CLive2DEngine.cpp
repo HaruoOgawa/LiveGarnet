@@ -1,5 +1,6 @@
 #include "CLive2DEngine.h"
 #include <Message/Console.h>
+#include <LoadWorker/CFile.h>
 #include "CLive2DModel.h"
 
 namespace livegarnet
@@ -24,11 +25,36 @@ namespace livegarnet
 		Console::Log("[Live2D] message: %s\n", message);
 	}
 
+	csmByte* CLive2DEngine::LoadFile(const std::string filePath, csmSizeInt* outSize)
+	{
+		std::string SrcPath = "Resources/User/Live2D/Shader/OpenGL/" + filePath;
+
+		resource::CFile File = resource::CFile(SrcPath);
+		if (!File.LoadImmediate()) return NULL;
+
+		const auto& data = File.GetData();
+
+		void* Dst = malloc(data.size());
+
+		std::memcpy(Dst, &data[0], data.size());
+		*outSize = data.size();
+
+		return (csmByte*)Dst;
+	}
+
+	void CLive2DEngine::ReleaseBytes(Csm::csmByte* byteData)
+	{
+		free(byteData);
+	}
+
 	bool CLive2DEngine::Initialize()
 	{
 		// Cubismの設定
 		m_CubismOption.LoggingLevel = Csm::CubismFramework::Option::LogLevel_Verbose;
 		m_CubismOption.LogFunction = PrintMessage;
+
+		m_CubismOption.LoadFileFunction = LoadFile;
+		m_CubismOption.ReleaseBytesFunction = ReleaseBytes;
 
 		// CubismNativeFrameworkの初期化に必要なデータを事前に渡す
 		Csm::CubismFramework::StartUp(&m_CubismAllocator, &m_CubismOption);
@@ -49,11 +75,12 @@ namespace livegarnet
 		return true;
 	}
 
-	bool CLive2DEngine::Draw()
+	bool CLive2DEngine::Draw(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<camera::CCamera>& Camera,
+		const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo)
 	{
 		for (auto& Model : m_ModelMap)
 		{
-			if (!Model.second->Draw()) return false;
+			if (!Model.second->Draw(pGraphicsAPI, Camera, Projection, DrawInfo)) return false;
 		}
 
 		return true;

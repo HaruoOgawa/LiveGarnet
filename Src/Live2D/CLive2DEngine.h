@@ -6,7 +6,12 @@
 #include <map>
 #include "CLive2DMemoryAllocator.h"
 
+using namespace Csm;
+
 namespace api { class IGraphicsAPI; }
+namespace camera { class CCamera; }
+namespace projection { class CProjection; }
+namespace graphics { class CDrawInfo; }
 
 namespace livegarnet
 {
@@ -25,6 +30,8 @@ namespace livegarnet
 
 	private:
 		static void PrintMessage(const Csm::csmChar* message);
+		static csmByte* LoadFile(const std::string filePath, csmSizeInt* outSize);
+		static void ReleaseBytes(Csm::csmByte* byteData);
 
 	public:
 		CLive2DEngine();
@@ -32,7 +39,8 @@ namespace livegarnet
 
 		bool Initialize();
 		bool Update();
-		bool Draw();
+		bool Draw(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<camera::CCamera>& Camera, 
+			const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo);
 
 		// Šeƒ‚ƒfƒ‹ŠÖŒW
 		bool LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path);

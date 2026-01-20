@@ -11,6 +11,9 @@
 using namespace Csm;
 
 namespace api { class IGraphicsAPI; }
+namespace camera { class CCamera; }
+namespace projection { class CProjection; }
+namespace graphics { class CDrawInfo; }
 
 namespace livegarnet
 {
@@ -30,6 +33,6 @@ namespace livegarnet
 		virtual bool Initialize();
 		virtual bool LoadTextures(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<ICubismModelSetting>& ModelSetting, const std::string& Directory);
 
-		virtual bool Draw();
+		virtual bool Draw(CubismMatrix44& MVPMat);
 	};
 }

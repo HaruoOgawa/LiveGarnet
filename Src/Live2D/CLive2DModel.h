@@ -9,6 +9,9 @@
 using namespace Csm;
 
 namespace api { class IGraphicsAPI; }
+namespace camera { class CCamera; }
+namespace projection { class CProjection; }
+namespace graphics { class CDrawInfo; }
 
 namespace livegarnet
 {
@@ -31,6 +34,7 @@ namespace livegarnet
 
 		bool Load(api::IGraphicsAPI* pGraphicsAPI, const std::string& model3Path);
 		bool Update();
-		bool Draw();
+		bool Draw(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<camera::CCamera>& Camera,
+			const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo);
 	};
 }

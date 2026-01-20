@@ -25,8 +25,11 @@ namespace livegarnet
 		return true;
 	}
 
-	bool CLive2DOpenGLRenderer::Draw()
+	bool CLive2DOpenGLRenderer::Draw(CubismMatrix44& MVPMat)
 	{
+		// MVP行列を設定
+		m_Model->GetRenderer<Rendering::CubismRenderer_OpenGLES2>()->SetMvpMatrix(&MVPMat);
+
 		// モデルの描画命令を実行
 		m_Model->GetRenderer<Rendering::CubismRenderer_OpenGLES2>()->DrawModel();
 
@@ -55,6 +58,9 @@ namespace livegarnet
 
 			m_TextureList.push_back(Texture);
 		}
+
+		// 乗算済みアルファ値の有効化・無効化を設定
+		m_Model->GetRenderer<Rendering::CubismRenderer_OpenGLES2>()->IsPremultipliedAlpha(false);
 
 		return true;
 	}

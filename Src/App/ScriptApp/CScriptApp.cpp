@@ -42,7 +42,7 @@ namespace app
 		m_FileModifier(std::make_shared<CFileModifier>()),
 		m_TimelineController(std::make_shared<timeline::CTimelineController>())
 	{
-		m_ViewCamera->SetPos(glm::vec3(-7.0f, 1.0f, 0.0f));
+		m_ViewCamera->SetPos(glm::vec3(0.0f, 0.0f, 1.0f));
 		m_MainCamera = m_ViewCamera;
 
 		m_DrawInfo->GetLightCamera()->SetPos(glm::vec3(-2.358f, 15.6f, -0.59f));
@@ -146,8 +146,8 @@ namespace app
 		// MainResultPass(フォアグラウンドレンダリング)
 		{
 			if (!pGraphicsAPI->BeginRender("MainResultPass")) return false;
-			if (!m_Live2DEngine->Draw()) return false;
 			if (!m_SceneController->Draw(pGraphicsAPI, m_MainCamera, m_Projection, m_DrawInfo)) return false;
+			if (!m_Live2DEngine->Draw(pGraphicsAPI, m_MainCamera, m_Projection, m_DrawInfo)) return false;
 			if (!pGraphicsAPI->EndRender()) return false;
 		}
 

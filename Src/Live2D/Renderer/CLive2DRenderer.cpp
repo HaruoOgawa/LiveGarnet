@@ -22,7 +22,7 @@ namespace livegarnet
 		return true;
 	}
 
-	bool CLive2DRenderer::Draw()
+	bool CLive2DRenderer::Draw(CubismMatrix44& MVPMat)
 	{
 		return true;
 	}

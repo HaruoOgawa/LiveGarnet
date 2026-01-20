@@ -19,7 +19,7 @@ namespace livegarnet
 
 		virtual bool LoadTextures(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<ICubismModelSetting>& ModelSetting, const std::string& Directory) override;
 
-		virtual bool Draw() override;
+		virtual bool Draw(CubismMatrix44& MVPMat) override;
 	};
 }
 #endif USE_OPENGL

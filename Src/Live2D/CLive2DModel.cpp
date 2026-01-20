@@ -1,5 +1,8 @@
 #include "CLive2DModel.h"
 #include <LoadWorker/CFile.h>
+#include <Camera/CCamera.h>
+#include <Projection/CProjection.h>
+#include <glm/glm.hpp>
 
 #include <CubismModelSettingJson.hpp>
 
@@ -59,15 +62,36 @@ namespace livegarnet
 
 	bool CLive2DModel::Update()
 	{
+		if (!_model) return true;
+
+		// 前回のセーブデータをロード
+		_model->LoadParameters();
+
+		// 設定更新
+
+		// 更新内容をセーブ
+		_model->SaveParameters();
+
 		// モデルの頂点情報を更新
 		_model->Update();
 
 		return true;
 	}
 
-	bool CLive2DModel::Draw()
+	bool CLive2DModel::Draw(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<camera::CCamera>& Camera,
+		const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo)
 	{
-		if (!m_Renderer->Draw()) return false;
+		if (!_model) return true;
+
+		// MVP行列の計算
+		glm::mat4 ProjViewMat = Projection->GetPerspectiveMatrix() * Camera->GetViewMatrix();
+
+		CubismMatrix44 MVPMat;
+		MVPMat.SetMatrix(&ProjViewMat[0][0]);
+
+		MVPMat.MultiplyByMatrix(_modelMatrix);
+
+		if (!m_Renderer->Draw(MVPMat)) return false;
 
 		return true;
 	}
