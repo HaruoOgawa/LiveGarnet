@@ -30,14 +30,10 @@ namespace livegarnet
 		// モーション
 		std::string m_DefaultMotionGroup;
 		int m_DefaultMotionIndex;
-		
-		std::unique_ptr<CubismMotionManager> m_MotionManager;
 		std::map<std::string, ACubismMotion*> m_MotionMap;
 
 		// 表情
 		std::string m_DefaultExpression;
-
-		std::unique_ptr<CubismMotionManager> m_ExpressionManager;
 		std::map<std::string, ACubismMotion*> m_ExpressionMap;
 
 		// レンダラー
@@ -47,8 +43,9 @@ namespace livegarnet
 		void Release();
 
 		bool LoadMoc3(api::IGraphicsAPI* pGraphicsAPI, const std::string& Directory);
-		bool LoadExpressionList(const std::string& Directory);
+		bool LoadPhysics(const std::string& Directory);
 		bool LoadDefaultMotionList(const std::string& Directory);
+		bool LoadExpressionList(const std::string& Directory);
 
 		std::string CreateMotionKey(const std::string& MotionGroup, int Index) const;
 	public:

@@ -21,9 +21,7 @@ namespace livegarnet
 		m_ModelSetting(nullptr),
 		m_DefaultMotionGroup(std::string()),
 		m_DefaultMotionIndex(-1),
-		m_MotionManager(std::make_unique<CubismMotionManager>()),
 		m_DefaultExpression(std::string()),
-		m_ExpressionManager(std::make_unique<CubismMotionManager>()),
 		m_Renderer(std::make_unique<CLive2DRenderer>(this))
 	{
 #ifdef USE_OPENGL
@@ -76,15 +74,18 @@ namespace livegarnet
 		// moc3
 		if (!LoadMoc3(pGraphicsAPI, m_RootDirectory)) return false;
 
+		// 物理演算
+		if (!LoadPhysics(m_RootDirectory)) return false;
+
+		// ポーズ
+
 		// モーション
 		if (!LoadDefaultMotionList(m_RootDirectory)) return false;
 
 		// 表情
 		if (!LoadExpressionList(m_RootDirectory)) return false;
 
-		// 物理演算
-
-		// ToDo: 残りの項目は後回し(ポーズ、まばたき、リップシンク、ユーザーデータ)
+		// ToDo: 残りの項目は後回し(まばたき、リップシンク、ユーザーデータ)
 
 		// レイアウトから初期位置を設定
 		csmMap<csmString, csmFloat32> layout;
@@ -113,7 +114,7 @@ namespace livegarnet
 		// 設定更新
 
 		// モーション再生
-		if (m_MotionManager->IsFinished())
+		if (_motionManager->IsFinished())
 		{
 			// モーションが再生中でなければデフォルトモーションを再生開始する
 			if (!ChangeMotion(m_DefaultMotionGroup, m_DefaultMotionIndex)) return false;
@@ -121,18 +122,25 @@ namespace livegarnet
 		else
 		{
 			// 再生中なのでモーションを更新する
-			m_MotionManager->UpdateMotion(_model, DeltaTime);
+			_motionManager->UpdateMotion(_model, DeltaTime);
 		}
 
 		// 表情を再生
-		if (m_ExpressionManager->IsFinished())
+		if (_expressionManager->IsFinished())
 		{
 			// 表情が再生中でなければデフォルトの表情を再生開始する
 			if (!ChangeExpression(m_DefaultExpression)) return false;
 		}
 		else
 		{
-			m_ExpressionManager->UpdateMotion(_model, DeltaTime);
+			// 再生中なので表情を更新する
+			_expressionManager->UpdateMotion(_model, DeltaTime);
+		}
+
+		// 物理演算
+		if (_physics)
+		{
+			_physics->Evaluate(_model, DeltaTime);
 		}
 
 		// 更新内容をセーブ
@@ -174,6 +182,8 @@ namespace livegarnet
 		{
 			// 未登録モーションなので新規ロードして再生
 			std::string fileName = m_ModelSetting->GetMotionFileName(MotionGroup.c_str(), Index);
+			if (fileName.empty()) return true;
+
 			std::string fullPath = m_RootDirectory + fileName;
 
 			resource::CFile File = resource::CFile(fullPath);
@@ -195,7 +205,7 @@ namespace livegarnet
 
 		if (!pMotion) return false;
 
-		m_MotionManager->StartMotion(pMotion, autoDelete);
+		_motionManager->StartMotion(pMotion, autoDelete);
 
 		return true;
 	}
@@ -208,7 +218,7 @@ namespace livegarnet
 		ACubismMotion* pMotion = it->second;
 		if (!pMotion) return false;
 
-		m_ExpressionManager->StartMotion(pMotion, false);
+		_expressionManager->StartMotion(pMotion, false);
 
 		return true;
 	}
@@ -237,8 +247,29 @@ namespace livegarnet
 		return true;
 	}
 
+	bool CLive2DModel::LoadPhysics(const std::string& Directory)
+	{
+		if (!m_ModelSetting) return false;
+
+		std::string fileName = m_ModelSetting->GetPhysicsFileName();
+		if (fileName.empty()) return true;
+
+		std::string fullPath = Directory + fileName;
+
+		resource::CFile File = resource::CFile(fullPath);
+		if (!File.LoadImmediate()) return false;
+
+		const auto& data = File.GetData();
+
+		_physics = CubismPhysics::Create(&data[0], data.size());
+
+		return true;
+	}
+
 	bool CLive2DModel::LoadDefaultMotionList(const std::string& Directory)
 	{
+		if (!m_ModelSetting) return false;
+
 		for (int GroupIndex = 0; GroupIndex < m_ModelSetting->GetMotionGroupCount(); GroupIndex++)
 		{
 			const auto& MotionGroupName = m_ModelSetting->GetMotionGroupName(GroupIndex);
@@ -246,6 +277,8 @@ namespace livegarnet
 			for (int MotionIndex = 0; MotionIndex < m_ModelSetting->GetMotionCount(MotionGroupName); MotionIndex++)
 			{
 				std::string fileName = m_ModelSetting->GetMotionFileName(MotionGroupName, MotionIndex);
+				if (fileName.empty()) continue;
+
 				std::string fullPath = Directory + fileName;
 
 				resource::CFile File = resource::CFile(fullPath);
@@ -269,9 +302,13 @@ namespace livegarnet
 
 	bool CLive2DModel::LoadExpressionList(const std::string& Directory)
 	{
+		if (!m_ModelSetting) return false;
+
 		for (int i = 0; i < m_ModelSetting->GetExpressionCount(); i++)
 		{
 			std::string fileName = m_ModelSetting->GetExpressionFileName(i);
+			if (fileName.empty()) continue;
+
 			std::string path = Directory + fileName;
 
 			resource::CFile File = resource::CFile(path);
