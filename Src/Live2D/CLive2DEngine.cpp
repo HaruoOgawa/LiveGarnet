@@ -65,11 +65,11 @@ namespace livegarnet
 		return true;
 	}
 
-	bool CLive2DEngine::Update()
+	bool CLive2DEngine::Update(api::IGraphicsAPI* pGraphicsAPI, float DeltaTime)
 	{
 		for (auto& Model : m_ModelMap)
 		{
-			if (!Model.second->Update()) return false;
+			if (!Model.second->Update(pGraphicsAPI, DeltaTime)) return false;
 		}
 
 		return true;
@@ -86,10 +86,11 @@ namespace livegarnet
 		return true;
 	}
 
-	bool CLive2DEngine::LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path)
+	bool CLive2DEngine::LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path,
+		const std::string& DefaultMotionGroup, int DefaultMotionIndex)
 	{
 		std::shared_ptr<CLive2DModel> model = std::make_shared<CLive2DModel>();
-		if (!model->Load(pGraphicsAPI, model3Path)) return false;
+		if (!model->Load(pGraphicsAPI, model3Path, DefaultMotionGroup, DefaultMotionIndex)) return false;
 
 		m_ModelMap.emplace(name, model);
 

@@ -38,11 +38,12 @@ namespace livegarnet
 		virtual ~CLive2DEngine();
 
 		bool Initialize();
-		bool Update();
+		bool Update(api::IGraphicsAPI* pGraphicsAPI, float DeltaTime);
 		bool Draw(api::IGraphicsAPI* pGraphicsAPI, const std::shared_ptr<camera::CCamera>& Camera, 
 			const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo);
 
 		// Šeƒ‚ƒfƒ‹ŠÖŒW
-		bool LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path);
+		bool LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path,
+			const std::string& DefaultMotionGroup, int DefaultMotionIndex);
 	};
 }

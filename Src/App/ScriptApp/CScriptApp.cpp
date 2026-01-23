@@ -73,7 +73,8 @@ namespace app
 		if (!m_Live2DEngine->Initialize()) return false;
 
 		// Live2Dモデルロード
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json")) return false;
+		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0)) return false;
 
 		return true;
 	}
@@ -121,7 +122,7 @@ namespace app
 
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
 
-		if (!m_Live2DEngine->Update()) return false;
+		if (!m_Live2DEngine->Update(pGraphicsAPI, m_DrawInfo->GetDeltaSecondsTime())) return false;
 
 		return true;
 	}
