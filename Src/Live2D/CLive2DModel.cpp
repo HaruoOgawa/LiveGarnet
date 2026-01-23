@@ -22,6 +22,7 @@ namespace livegarnet
 		m_DefaultMotionGroup(std::string()),
 		m_DefaultMotionIndex(-1),
 		m_MotionManager(std::make_unique<CubismMotionManager>()),
+		m_DefaultExpression(std::string()),
 		m_ExpressionManager(std::make_unique<CubismMotionManager>()),
 		m_Renderer(std::make_unique<CLive2DRenderer>(this))
 	{
@@ -57,7 +58,7 @@ namespace livegarnet
 	}
 
 	bool CLive2DModel::Load(api::IGraphicsAPI* pGraphicsAPI, const std::string& model3Path,
-		const std::string& DefaultMotionGroup, int DefaultMotionIndex)
+		const std::string& DefaultMotionGroup, int DefaultMotionIndex, const std::string& DefaultExpression)
 	{
 		m_DefaultMotionGroup = DefaultMotionGroup;
 		m_DefaultMotionIndex = DefaultMotionIndex;
@@ -81,11 +82,9 @@ namespace livegarnet
 		// 表情
 		if (!LoadExpressionList(m_RootDirectory)) return false;
 
-		// ポーズ
-
 		// 物理演算
 
-		// ToDo: 残りの項目は後回し(まばたき、リップシンク、ユーザーデータ)
+		// ToDo: 残りの項目は後回し(ポーズ、まばたき、リップシンク、ユーザーデータ)
 
 		// レイアウトから初期位置を設定
 		csmMap<csmString, csmFloat32> layout;
@@ -125,6 +124,17 @@ namespace livegarnet
 			m_MotionManager->UpdateMotion(_model, DeltaTime);
 		}
 
+		// 表情を再生
+		if (m_ExpressionManager->IsFinished())
+		{
+			// 表情が再生中でなければデフォルトの表情を再生開始する
+			if (!ChangeExpression(m_DefaultExpression)) return false;
+		}
+		else
+		{
+			m_ExpressionManager->UpdateMotion(_model, DeltaTime);
+		}
+
 		// 更新内容をセーブ
 		_model->SaveParameters();
 
@@ -154,7 +164,51 @@ namespace livegarnet
 
 	bool CLive2DModel::ChangeMotion(const std::string& MotionGroup, int Index)
 	{
-		std::string fileName = m_ModelSetting->GetMotionFileName(MotionGroup.c_str(), Index);
+		std::string key = CreateMotionKey(MotionGroup, Index);
+
+		ACubismMotion* pMotion = nullptr;
+		bool autoDelete = false;
+
+		const auto& it = m_MotionMap.find(key);
+		if (it == m_MotionMap.end())
+		{
+			// 未登録モーションなので新規ロードして再生
+			std::string fileName = m_ModelSetting->GetMotionFileName(MotionGroup.c_str(), Index);
+			std::string fullPath = m_RootDirectory + fileName;
+
+			resource::CFile File = resource::CFile(fullPath);
+			if (!File.LoadImmediate()) return false;
+
+			const auto& data = File.GetData();
+
+			CubismMotion* pMotion = CubismMotion::Create(&data[0], data.size());
+			if (!pMotion) return false;
+
+			// 未登録モーションはその場限りの使用で再生が終わったらメモリを削除する
+			autoDelete = true;
+		}
+		else
+		{
+			// 登録済みモーションである
+			pMotion = it->second;
+		}
+
+		if (!pMotion) return false;
+
+		m_MotionManager->StartMotion(pMotion, autoDelete);
+
+		return true;
+	}
+
+	bool CLive2DModel::ChangeExpression(const std::string& ExpressionName)
+	{
+		const auto& it = m_ExpressionMap.find(ExpressionName);
+		if (it == m_ExpressionMap.end()) return true;
+
+		ACubismMotion* pMotion = it->second;
+		if (!pMotion) return false;
+
+		m_ExpressionManager->StartMotion(pMotion, false);
 
 		return true;
 	}

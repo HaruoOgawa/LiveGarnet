@@ -74,7 +74,7 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0)) return false;
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0, "F01")) return false;
 
 		return true;
 	}
@@ -119,6 +119,17 @@ namespace app
 				m_MainCamera = m_TraceCamera;
 			}
 		}
+
+		if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_1)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 0);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_2)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 1);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_3)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 2);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_4)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 3);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeExpression("Haru", "F01");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression("Haru", "F02");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression("Haru", "F03");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression("Haru", "F04");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression("Haru", "F05");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression("Haru", "F06");
 
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
 

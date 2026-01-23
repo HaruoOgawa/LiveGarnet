@@ -35,6 +35,8 @@ namespace livegarnet
 		std::map<std::string, ACubismMotion*> m_MotionMap;
 
 		// Х\По
+		std::string m_DefaultExpression;
+
 		std::unique_ptr<CubismMotionManager> m_ExpressionManager;
 		std::map<std::string, ACubismMotion*> m_ExpressionMap;
 
@@ -54,7 +56,7 @@ namespace livegarnet
 		virtual ~CLive2DModel();
 
 		bool Load(api::IGraphicsAPI* pGraphicsAPI, const std::string& model3Path, 
-			const std::string& DefaultMotionGroup, int DefaultMotionIndex);
+			const std::string& DefaultMotionGroup, int DefaultMotionIndex, const std::string& DefaultExpression);
 
 		bool Update(api::IGraphicsAPI* pGraphicsAPI, float DeltaTime);
 		
@@ -62,5 +64,6 @@ namespace livegarnet
 			const std::shared_ptr<projection::CProjection>& Projection, const std::shared_ptr<graphics::CDrawInfo>& DrawInfo);
 
 		bool ChangeMotion(const std::string& MotionGroup, int Index);
+		bool ChangeExpression(const std::string& ExpressionName);
 	};
 }

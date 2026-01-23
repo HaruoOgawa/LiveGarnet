@@ -44,6 +44,9 @@ namespace livegarnet
 
 		// Šeƒ‚ƒfƒ‹ŠÖŒW
 		bool LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path,
-			const std::string& DefaultMotionGroup, int DefaultMotionIndex);
+			const std::string& DefaultMotionGroup, int DefaultMotionIndex, const std::string& DefaultExpression);
+
+		bool ChangeMotion(const std::string& ModelName, const std::string& MotionGroup, int Index);
+		bool ChangeExpression(const std::string& ModelName, const std::string& ExpressionName);
 	};
 }

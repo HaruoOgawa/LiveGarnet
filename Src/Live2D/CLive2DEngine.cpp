@@ -87,12 +87,34 @@ namespace livegarnet
 	}
 
 	bool CLive2DEngine::LoadModel(api::IGraphicsAPI* pGraphicsAPI, const std::string& name, const std::string& model3Path,
-		const std::string& DefaultMotionGroup, int DefaultMotionIndex)
+		const std::string& DefaultMotionGroup, int DefaultMotionIndex, const std::string& DefaultExpression)
 	{
 		std::shared_ptr<CLive2DModel> model = std::make_shared<CLive2DModel>();
-		if (!model->Load(pGraphicsAPI, model3Path, DefaultMotionGroup, DefaultMotionIndex)) return false;
+		if (!model->Load(pGraphicsAPI, model3Path, DefaultMotionGroup, DefaultMotionIndex, DefaultExpression)) return false;
 
 		m_ModelMap.emplace(name, model);
+
+		return true;
+	}
+
+	bool CLive2DEngine::ChangeMotion(const std::string& ModelName, const std::string& MotionGroup, int Index)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return true;
+
+		const auto& model = it->second;
+		if (!model->ChangeMotion(MotionGroup, Index)) return false;
+
+		return true;
+	}
+
+	bool CLive2DEngine::ChangeExpression(const std::string& ModelName, const std::string& ExpressionName)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return true;
+
+		const auto& model = it->second;
+		if (!model->ChangeExpression(ExpressionName)) return false;
 
 		return true;
 	}
