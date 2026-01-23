@@ -61,23 +61,19 @@ namespace livegarnet
 		m_DefaultMotionGroup = DefaultMotionGroup;
 		m_DefaultMotionIndex = DefaultMotionIndex;
 
-		// model3.jsonの読み込み
-		resource::CFile File = resource::CFile(model3Path);
-		if (!File.LoadImmediate()) return false;
-
-		const auto& data = File.GetData();
-		m_ModelSetting = std::make_shared<CubismModelSettingJson>(&data[0], data.size());
-
-		// ルートディレクトリの設定
-		m_RootDirectory = File.GetDirectory();
-
-		// moc3
+		// model3.jsonの読み込み(各機能のJSONファイルへの参照が示された設定ファイル)
+		if (!LoadModel3(model3Path)) return false;
+		
+		// moc3(モデルの3Dデータ)
 		if (!LoadMoc3(pGraphicsAPI, m_RootDirectory)) return false;
 
 		// 物理演算
 		if (!LoadPhysics(m_RootDirectory)) return false;
 
 		// ポーズ
+		// ポーズとは複数の同種パーツのうち、単一のパーツだけをモーションに基づいて切り替えをフェード表示する仕組みのこと
+		// これがないと腕が４本表示されたりする
+		if (!LoadPose(m_RootDirectory)) return false;
 
 		// モーション
 		if (!LoadDefaultMotionList(m_RootDirectory)) return false;
@@ -135,6 +131,12 @@ namespace livegarnet
 		{
 			// 再生中なので表情を更新する
 			_expressionManager->UpdateMotion(_model, DeltaTime);
+		}
+
+		// ポーズの設定
+		if (_pose)
+		{
+			_pose->UpdateParameters(_model, DeltaTime);
 		}
 
 		// 物理演算
@@ -230,6 +232,20 @@ namespace livegarnet
 		return key;
 	}
 
+	bool CLive2DModel::LoadModel3(const std::string& model3Path)
+	{
+		resource::CFile File = resource::CFile(model3Path);
+		if (!File.LoadImmediate()) return false;
+
+		const auto& data = File.GetData();
+		m_ModelSetting = std::make_shared<CubismModelSettingJson>(&data[0], data.size());
+
+		// ルートディレクトリの設定
+		m_RootDirectory = File.GetDirectory();
+
+		return true;
+	}
+
 	bool CLive2DModel::LoadMoc3(api::IGraphicsAPI* pGraphicsAPI, const std::string& Directory)
 	{
 		if (!m_ModelSetting) return false;
@@ -262,6 +278,25 @@ namespace livegarnet
 		const auto& data = File.GetData();
 
 		_physics = CubismPhysics::Create(&data[0], data.size());
+
+		return true;
+	}
+
+	bool CLive2DModel::LoadPose(const std::string& Directory)
+	{
+		if (!m_ModelSetting) return false;
+
+		std::string fileName = m_ModelSetting->GetPoseFileName();
+		if (fileName.empty()) return true;
+
+		std::string fullPath = Directory + fileName;
+
+		resource::CFile File = resource::CFile(fullPath);
+		if (!File.LoadImmediate()) return false;
+
+		const auto& data = File.GetData();
+
+		_pose = CubismPose::Create(&data[0], data.size());
 
 		return true;
 	}

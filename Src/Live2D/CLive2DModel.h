@@ -42,8 +42,10 @@ namespace livegarnet
 	private:
 		void Release();
 
+		bool LoadModel3(const std::string& model3Path);
 		bool LoadMoc3(api::IGraphicsAPI* pGraphicsAPI, const std::string& Directory);
 		bool LoadPhysics(const std::string& Directory);
+		bool LoadPose(const std::string& Directory);
 		bool LoadDefaultMotionList(const std::string& Directory);
 		bool LoadExpressionList(const std::string& Directory);
 
