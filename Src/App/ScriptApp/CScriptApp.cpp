@@ -74,7 +74,7 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0, "F01")) return false;
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
 
 		return true;
 	}

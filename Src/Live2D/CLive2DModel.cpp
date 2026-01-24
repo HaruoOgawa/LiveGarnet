@@ -3,11 +3,13 @@
 #include <Camera/CCamera.h>
 #include <Projection/CProjection.h>
 #include <glm/glm.hpp>
+#include <Message/Console.h>
 
 #include <CubismModelSettingJson.hpp>
+#include <Id/CubismIdManager.hpp>
 
+#include "CLive2DSkeleton.h"
 #include "Renderer/CLive2DRenderer.h"
-
 #ifdef USE_OPENGL
 #include "Renderer/OpenGL/CLive2DOpenGLRenderer.h"
 #elif USE_VULKAN
@@ -22,7 +24,8 @@ namespace livegarnet
 		m_DefaultMotionGroup(std::string()),
 		m_DefaultMotionIndex(-1),
 		m_DefaultExpression(std::string()),
-		m_Renderer(std::make_unique<CLive2DRenderer>(this))
+		m_Renderer(std::make_unique<CLive2DRenderer>(this)),
+		m_Skeleton(std::make_shared<CLive2DSkeleton>())
 	{
 #ifdef USE_OPENGL
 		m_Renderer = std::make_unique<CLive2DOpenGLRenderer>(this);
@@ -94,6 +97,9 @@ namespace livegarnet
 		// レンダラの生成
 		if (!m_Renderer->Initialize()) return false;
 
+		// スケルトン構築
+		m_Skeleton->Create();
+
 		// テクスチャロード
 		if (!m_Renderer->LoadTextures(pGraphicsAPI, m_ModelSetting, m_RootDirectory)) return false;
 
@@ -106,8 +112,6 @@ namespace livegarnet
 
 		// 前回のセーブデータをロード
 		_model->LoadParameters();
-
-		// 設定更新
 
 		// モーション再生
 		if (_motionManager->IsFinished())
@@ -132,6 +136,9 @@ namespace livegarnet
 			// 再生中なので表情を更新する
 			_expressionManager->UpdateMotion(_model, DeltaTime);
 		}
+
+		// スケルトン更新
+		if (!m_Skeleton->Update(_model)) return false;
 
 		// ポーズの設定
 		if (_pose)

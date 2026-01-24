@@ -19,6 +19,7 @@ namespace graphics { class CDrawInfo; }
 namespace livegarnet
 {
 	class CLive2DRenderer;
+	class CLive2DSkeleton;
 
 	class CLive2DModel : public CubismUserModel
 	{
@@ -38,6 +39,9 @@ namespace livegarnet
 
 		// レンダラー
 		std::unique_ptr<CLive2DRenderer> m_Renderer;
+
+		// Live2Dスケルトン
+		std::shared_ptr<CLive2DSkeleton> m_Skeleton;
 
 	private:
 		void Release();
