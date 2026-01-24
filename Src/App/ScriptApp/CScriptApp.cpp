@@ -25,6 +25,7 @@ namespace app
 {
 	CScriptApp::CScriptApp() :
 		m_SceneController(std::make_shared<scene::CSceneController>()),
+		m_Live2DEngine(std::make_shared<livegarnet::CLive2DEngine>()),
 		m_CameraSwitchToggle(true),
 		m_MainCamera(nullptr),
 #ifdef USE_VIEWER_CAMERA
@@ -41,7 +42,7 @@ namespace app
 		m_FileModifier(std::make_shared<CFileModifier>()),
 		m_TimelineController(std::make_shared<timeline::CTimelineController>())
 	{
-		m_ViewCamera->SetPos(glm::vec3(-7.0f, 1.0f, 0.0f));
+		m_ViewCamera->SetPos(glm::vec3(0.0f, 0.0f, 1.0f));
 		m_MainCamera = m_ViewCamera;
 
 		m_DrawInfo->GetLightCamera()->SetPos(glm::vec3(-2.358f, 15.6f, -0.59f));
@@ -68,6 +69,12 @@ namespace app
 		
 		m_MainFrameRenderer = std::make_shared<graphics::CFrameRenderer>(pGraphicsAPI, "", pGraphicsAPI->FindOffScreenRenderPass("MainResultPass")->GetFrameTextureList());
 		if (!m_MainFrameRenderer->Create(pLoadWorker, "Resources\\Common\\MaterialFrame\\FrameTexture_MF.json")) return false;
+
+		if (!m_Live2DEngine->Initialize()) return false;
+
+		// Live2Dモデルロード
+		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
 
 		return true;
 	}
@@ -113,7 +120,20 @@ namespace app
 			}
 		}
 
+		if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_1)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 0);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_2)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 1);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_3)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 2);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_4)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 3);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeExpression("Haru", "F01");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression("Haru", "F02");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression("Haru", "F03");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression("Haru", "F04");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression("Haru", "F05");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression("Haru", "F06");
+
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
+
+		if (!m_Live2DEngine->Update(pGraphicsAPI, m_DrawInfo->GetDeltaSecondsTime())) return false;
 
 		return true;
 	}
@@ -139,6 +159,7 @@ namespace app
 		{
 			if (!pGraphicsAPI->BeginRender("MainResultPass")) return false;
 			if (!m_SceneController->Draw(pGraphicsAPI, m_MainCamera, m_Projection, m_DrawInfo)) return false;
+			if (!m_Live2DEngine->Draw(pGraphicsAPI, m_MainCamera, m_Projection, m_DrawInfo)) return false;
 			if (!pGraphicsAPI->EndRender()) return false;
 		}
 

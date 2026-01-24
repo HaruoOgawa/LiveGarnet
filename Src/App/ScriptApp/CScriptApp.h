@@ -10,6 +10,7 @@ namespace gui { class CGraphicsEditingWindow; }
 namespace timeline { class CTimelineController; }
 namespace scene { class CSceneController; }
 namespace camera { class CTraceCamera; }
+namespace livegarnet { class CLive2DEngine; }
 
 namespace app
 {
@@ -18,6 +19,8 @@ namespace app
 	class CScriptApp : public CApp
 	{
 		std::shared_ptr<scene::CSceneController> m_SceneController;
+
+		std::shared_ptr<livegarnet::CLive2DEngine> m_Live2DEngine;
 
 		std::shared_ptr<camera::CCamera> m_MainCamera;
 		std::shared_ptr<camera::CCamera> m_ViewCamera;
