@@ -17,55 +17,74 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 
 # デバッグ出力コールバック
 def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
-    print("pose result: {}".format(result))
+    print("pose callback!!!!!")
+
+class CPoseLandmarker:
+    def __init__(self):
+        self._Loaded = False
+
+    def IsLoaded(self):
+        return self._Loaded
+    
+    def Load(self):
+        # ポーズランドマーカーの設定
+        options = PoseLandmarkerOptions(
+            base_options=BaseOptions(model_asset_path=model_path), # 学習モデルの指定
+            running_mode=VisionRunningMode.IMAGE
+        )
+
+        # オプションをもとにポーズランドマーカーを作成
+        print("PoseLandmarker created.")
+        self._landmarker = PoseLandmarker.create_from_options(options)
+        self._Loaded = True
+
+    def detect(self, mp_image):
+        result = self._landmarker.detect(mp_image)
+        pose_landmarks = result.pose_landmarks[0]
+
+        if pose_landmarks != None:
+            print(len(pose_landmarks))
 
 #
 def main():
-    # タスク作成
-    # ポーズランドマーカーの設定
-    options = PoseLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path=model_path), # 学習モデルの指定
-        running_mode=VisionRunningMode.LIVE_STREAM, # ライブストリーム(Webカメラなどリアルタイム更新映像)モードで起動
-        result_callback=print_result
-    )
+    print("Motion capture Started.")
 
-    # オプションをもとにポーズランドマーカーを作成
-    with PoseLandmarker.create_from_options(options) as landmarker:
-        print("create_from_options")
-        
-        # opencvで0番目のWebカメラを起動
-        cap = cv2.VideoCapture(0)
+    # Poseタスク作成
+    poseTask = CPoseLandmarker()
+    poseTask.Load()
 
-        while cap.isOpened():
-            print("cap.isOpened")
+    # opencvで0番目のWebカメラを起動
+    cap = cv2.VideoCapture(0)
 
-            # Webカメラの映像を取得
-            ret, frame = cap.read()
+    while cap.isOpened():
+        # Webカメラの映像を取得
+        ret, frame = cap.read()
 
-            if ret == True:
-                # フレームを画面に表示
-                cv2.imshow('WebCam Frame', frame)
-
-                # Webカメラ映像のデータを作成
-                img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
-
-                # シミュレーションを実行
-                landmarker.detect(mp_image)
-
-                # 終了キーを検知したら抜ける
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-            else:
+        if ret == True:
+            # 終了キーを検知したら抜ける
+            if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        # キャプチャをリリース
-        cap.release()
+            # フレームを画面に表示
+            cv2.imshow('WebCam Frame', frame)
 
-        # ウィンドウを閉じる
-        cv2.destroyAllWindows()
+            # Webカメラ映像のデータを作成
+            img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
 
-        print("finish")
+            # Pose検出
+            if(poseTask.IsLoaded()):
+                poseTask.detect(mp_image)
+        else:
+            break
+
+    # キャプチャをリリース
+    cap.release()
+
+    # ウィンドウを閉じる
+    cv2.destroyAllWindows()
+
+    print("Motion capture finished.")
 
 #        
 main()
