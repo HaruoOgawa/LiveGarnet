@@ -38,16 +38,30 @@ class CPoseLandmarker:
         self._landmarker = PoseLandmarker.create_from_options(options)
         self._Loaded = True
 
-    def detect(self, mp_image):
+    def detect(self, _debugShow, frame, mp_image):
         result = self._landmarker.detect(mp_image)
+        if result.pose_landmarks == None:
+            return
+        
         pose_landmarks = result.pose_landmarks[0]
+        if pose_landmarks == None:
+            return
+        
+        # デバッグ描画
+        if(_debugShow):
+            h, w, _= frame.shape
 
-        if pose_landmarks != None:
-            print(len(pose_landmarks))
+            for landmark in pose_landmarks:
+                x = int(w * landmark.x)
+                y = int(h * landmark.y)
+
+                cv2.circle(frame, (x, y), 5, (255, 0, 0), -1)
 
 #
 def main():
     print("Motion capture Started.")
+
+    _debugShow = True
 
     # Poseタスク作成
     poseTask = CPoseLandmarker()
@@ -64,17 +78,19 @@ def main():
             # 終了キーを検知したら抜ける
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
-            # フレームを画面に表示
-            cv2.imshow('WebCam Frame', frame)
-
+            
             # Webカメラ映像のデータを作成
             img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
 
             # Pose検出
             if(poseTask.IsLoaded()):
-                poseTask.detect(mp_image)
+                poseTask.detect(_debugShow, frame, mp_image)
+
+            # フレームを画面に表示
+            if(_debugShow):
+                cv2.imshow('WebCam Frame', frame)
+
         else:
             break
 
