@@ -4,6 +4,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import numpy as np
 import cv2
+from socket import *
 
 # トレーニング済みのモデル
 model_path = "pose_landmarker_heavy.task"
@@ -15,9 +16,24 @@ PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
 PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
-# デバッグ出力コールバック
-def print_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int):
-    print("pose callback!!!!!")
+class CUDPSocket:
+    def __init__(self):
+        pass
+
+    def Connect(self, address, port):
+        # 送信元
+        self._SrcAddr = (address, port)
+
+        # 接続
+        self.udpClient = socket(AF_INET, SOCK_DGRAM)
+        self.udpClient.connect((address, port))
+
+    def Send(self, SrcData):
+        DstData = SrcData.encode('utf-8')
+        self.udpClient.send(DstData)
+
+    def Close(self):
+        self.udpClient.close()
 
 class CPoseLandmarker:
     def __init__(self):
@@ -40,7 +56,10 @@ class CPoseLandmarker:
 
     def detect(self, _debugShow, frame, mp_image):
         result = self._landmarker.detect(mp_image)
-        if result.pose_landmarks == None:
+        if(result == None):
+            return
+
+        if result.pose_landmarks == None or len(result.pose_landmarks) == 0:
             return
         
         pose_landmarks = result.pose_landmarks[0]
@@ -63,6 +82,10 @@ def main():
 
     _debugShow = True
 
+    # UDP接続
+    udp = CUDPSocket()
+    udp.Connect('127.0.0.1', 5000)
+
     # Poseタスク作成
     poseTask = CPoseLandmarker()
     poseTask.Load()
@@ -71,6 +94,8 @@ def main():
     cap = cv2.VideoCapture(0)
 
     while cap.isOpened():
+        udp.Send('Hello UDP_PY')
+
         # Webカメラの映像を取得
         ret, frame = cap.read()
 
@@ -99,6 +124,9 @@ def main():
 
     # ウィンドウを閉じる
     cv2.destroyAllWindows()
+
+    # UDPを閉じる
+    udp.Close()
 
     print("Motion capture finished.")
 

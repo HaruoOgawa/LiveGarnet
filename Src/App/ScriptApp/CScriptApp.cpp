@@ -21,6 +21,10 @@
 #include "../../GUIApp/Model/CFileModifier.h"
 #include "../../Live2D/CLive2DEngine.h"
 
+#ifdef USE_NETWORK
+#include <Network/CUDPSocket.h>
+#endif
+
 namespace app
 {
 	CScriptApp::CScriptApp() :
@@ -39,6 +43,9 @@ namespace app
 #ifdef USE_GUIENGINE
 		m_GraphicsEditingWindow(std::make_shared<gui::CGraphicsEditingWindow>()),
 #endif // USE_GUIENGINE
+#ifdef USE_NETWORK
+		m_UDPSocket(std::make_shared<network::CUDPSocket>("127.0.0.1", 5000)),
+#endif // USE_NETWORK
 		m_FileModifier(std::make_shared<CFileModifier>()),
 		m_TimelineController(std::make_shared<timeline::CTimelineController>())
 	{
@@ -58,12 +65,16 @@ namespace app
 
 	bool CScriptApp::Release(api::IGraphicsAPI* pGraphicsAPI)
 	{
+		m_UDPSocket->Close();
+
 		return true;
 	}
 
 	bool CScriptApp::Initialize(api::IGraphicsAPI* pGraphicsAPI, physics::IPhysicsEngine* pPhysicsEngine, resource::CLoadWorker* pLoadWorker)
 	{
 		pLoadWorker->AddScene(std::make_shared<resource::CSceneLoader>("Resources\\User\\Scene\\Sample.json", m_SceneController));
+
+		if (!m_UDPSocket->Initialize(shared_from_this(), true)) return false;
 
 		if (!pGraphicsAPI->CreateRenderPass("MainResultPass", api::ERenderPassFormat::COLOR_FLOAT_RENDERPASS, -1, -1)) return false;
 		

@@ -12,6 +12,8 @@ namespace scene { class CSceneController; }
 namespace camera { class CTraceCamera; }
 namespace livegarnet { class CLive2DEngine; }
 
+namespace network { class CUDPSocket; }
+
 namespace app
 {
 	class CFileModifier;
@@ -38,6 +40,10 @@ namespace app
 		std::shared_ptr<timeline::CTimelineController> m_TimelineController;
 
 		bool m_CameraSwitchToggle;
+
+#ifdef USE_NETWORK
+		std::shared_ptr<network::CUDPSocket> m_UDPSocket;
+#endif
 
 	public:
 		CScriptApp();
