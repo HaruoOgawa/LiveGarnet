@@ -69,6 +69,9 @@ namespace app
 		// ロード完了イベント
 		virtual bool OnLoaded(api::IGraphicsAPI* pGraphicsAPI, physics::IPhysicsEngine* pPhysicsEngine, resource::CLoadWorker* pLoadWorker, const std::shared_ptr<gui::IGUIEngine>& GUIEngine) override;
 
+		// バイナリ受信イベント
+		virtual bool OnReceiveBinary(const std::vector<unsigned char>& Binary) override;
+
 		// フォーカスイベント
 		virtual void OnFocus(bool Focused, api::IGraphicsAPI* pGraphicsAPI, resource::CLoadWorker* pLoadWorker) override;
 

@@ -5,6 +5,8 @@ from mediapipe.tasks.python import vision
 import numpy as np
 import cv2
 from socket import *
+import struct
+import sys
 
 # トレーニング済みのモデル
 model_path = "pose_landmarker_heavy.task"
@@ -28,9 +30,8 @@ class CUDPSocket:
         self.udpClient = socket(AF_INET, SOCK_DGRAM)
         self.udpClient.connect((address, port))
 
-    def Send(self, SrcData):
-        DstData = SrcData.encode('utf-8')
-        self.udpClient.send(DstData)
+    def Send(self, data):
+        self.udpClient.send(data)
 
     def Close(self):
         self.udpClient.close()
@@ -82,6 +83,19 @@ def main():
 
     _debugShow = True
 
+    data = bytearray()
+
+    head = "LG2D"
+    data.extend(head.encode('utf-8'))
+
+    val = 5.0
+    data.extend(struct.pack('<f', val))
+    
+    val_2 = -1135.22367
+    data.extend(struct.pack('<f', val_2))
+
+    print(data)
+
     # UDP接続
     udp = CUDPSocket()
     udp.Connect('127.0.0.1', 5000)
@@ -94,8 +108,6 @@ def main():
     cap = cv2.VideoCapture(0)
 
     while cap.isOpened():
-        udp.Send('Hello UDP_PY')
-
         # Webカメラの映像を取得
         ret, frame = cap.read()
 
@@ -115,6 +127,9 @@ def main():
             # フレームを画面に表示
             if(_debugShow):
                 cv2.imshow('WebCam Frame', frame)
+
+            # データ送信
+            udp.Send(data)
 
         else:
             break

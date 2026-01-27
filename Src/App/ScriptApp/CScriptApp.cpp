@@ -3,6 +3,7 @@
 #include <Graphics/CDrawInfo.h>
 #include <Graphics/CFrameRenderer.h>
 #include <Graphics/PostProcess/CPostProcess.h>
+#include <Binary/CBinaryReader.h>
 
 #include <Camera/CCamera.h>
 #include <Camera/CTraceCamera.h>
@@ -253,6 +254,27 @@ namespace app
 				}
 			}
 		}
+
+		return true;
+	}
+
+	// バイナリ受信イベント
+	bool CScriptApp::OnReceiveBinary(const std::vector<unsigned char>& Binary)
+	{
+		binary::CBinaryReader Analyser(Binary);
+
+		std::string head = std::string();
+		if (!Analyser.GetString(head, 4)) return false;
+
+		if (head != "LG2D") return true;
+
+		float val = 0.0f;
+		if (!Analyser.GetFloat(val)) return false;
+
+		float val_2 = 0.0f;
+		if (!Analyser.GetFloat(val_2)) return false;
+
+		float x = 0.0f;
 
 		return true;
 	}
