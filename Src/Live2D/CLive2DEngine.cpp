@@ -118,4 +118,51 @@ namespace livegarnet
 
 		return true;
 	}
+
+	bool CLive2DEngine::OnReceiveData(const std::string& ModelName, binary::CBinaryReader& Analyser)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return true;
+
+		const auto& model = it->second;
+		if (!model) return true;
+
+		const auto& skeleton = model->GetSkeleton();
+		if (!skeleton) return true;
+
+		int version = 0;
+		if (!Analyser.GetInt(version)) return false;
+
+		float ParamAngleX = 0.0f;
+		if (!Analyser.GetFloat(ParamAngleX)) return false;
+		
+		float ParamAngleY = 0.0f;
+		if (!Analyser.GetFloat(ParamAngleY)) return false;
+		
+		float ParamAngleZ = 0.0f;
+		if (!Analyser.GetFloat(ParamAngleZ)) return false;
+		
+		float ParamBodyAngleX = 0.0f;
+		if (!Analyser.GetFloat(ParamBodyAngleX)) return false;
+		
+		float ParamBodyAngleY = 0.0f;
+		if (!Analyser.GetFloat(ParamBodyAngleY)) return false;
+		
+		float ParamBodyAngleZ = 0.0f;
+		if (!Analyser.GetFloat(ParamBodyAngleZ)) return false;
+		
+		float ParamArmL = 0.0f;
+		if (!Analyser.GetFloat(ParamArmL)) return false;
+		
+		float ParamArmR = 0.0f;
+		if (!Analyser.GetFloat(ParamArmR)) return false;
+		
+		float ParamHandL = 0.0f;
+		if (!Analyser.GetFloat(ParamHandL)) return false;
+		
+		float ParamHandR = 0.0f;
+		if (!Analyser.GetFloat(ParamHandR)) return false;
+
+		return true;
+	}
 }

@@ -22,6 +22,7 @@ namespace app
 	{
 		std::shared_ptr<scene::CSceneController> m_SceneController;
 
+		std::string m_MyModelName;
 		std::shared_ptr<livegarnet::CLive2DEngine> m_Live2DEngine;
 
 		std::shared_ptr<camera::CCamera> m_MainCamera;

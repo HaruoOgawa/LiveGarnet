@@ -55,7 +55,7 @@ class CPoseLandmarker:
         self._landmarker = PoseLandmarker.create_from_options(options)
         self._Loaded = True
 
-    def detect(self, _debugShow, frame, mp_image):
+    def detect(self, _debugShow, frame, mp_image, data):
         result = self._landmarker.detect(mp_image)
         if(result == None):
             return
@@ -67,6 +67,9 @@ class CPoseLandmarker:
         if pose_landmarks == None:
             return
         
+        # ランドマークからポーズの角度を計算
+        self.calcPose(pose_landmarks, data)
+        
         # デバッグ描画
         if(_debugShow):
             h, w, _= frame.shape
@@ -77,25 +80,47 @@ class CPoseLandmarker:
 
                 cv2.circle(frame, (x, y), 5, (255, 0, 0), -1)
 
+    def calcPose(self, pose_landmarks, data):
+        # 顔の向き
+        ParamAngleX = 1.0
+        data.extend(struct.pack('<f', ParamAngleX))
+        
+        ParamAngleY = 0.0
+        data.extend(struct.pack('<f', ParamAngleY))
+        
+        ParamAngleZ = 0.0
+        data.extend(struct.pack('<f', ParamAngleZ))
+        
+        # 体の向き
+        ParamBodyAngleX = 0.0
+        data.extend(struct.pack('<f', ParamBodyAngleX))
+        
+        ParamBodyAngleY = 0.0
+        data.extend(struct.pack('<f', ParamBodyAngleY))
+        
+        ParamBodyAngleZ = 0.0
+        data.extend(struct.pack('<f', ParamBodyAngleZ))
+        
+        # 腕
+        ParamArmL = 0.0
+        data.extend(struct.pack('<f', ParamArmL))
+        
+        ParamArmR = 0.0
+        data.extend(struct.pack('<f', ParamArmR))
+        
+        # 手
+        ParamHandL = 0.0
+        data.extend(struct.pack('<f', ParamHandL))
+        
+        ParamHandR = 0.0
+        data.extend(struct.pack('<f', ParamHandR))
+        
 #
 def main():
     print("Motion capture Started.")
 
     _debugShow = True
-
-    data = bytearray()
-
-    head = "LG2D"
-    data.extend(head.encode('utf-8'))
-
-    val = 5.0
-    data.extend(struct.pack('<f', val))
     
-    val_2 = -1135.22367
-    data.extend(struct.pack('<f', val_2))
-
-    print(data)
-
     # UDP接続
     udp = CUDPSocket()
     udp.Connect('127.0.0.1', 5000)
@@ -120,9 +145,18 @@ def main():
             img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=img_rgb)
 
+            #
+            data = bytearray()
+
+            head = "LG2D"
+            data.extend(head.encode('utf-8'))
+
+            version = 1
+            data.extend(struct.pack('<i', version))
+
             # Pose検出
             if(poseTask.IsLoaded()):
-                poseTask.detect(_debugShow, frame, mp_image)
+                poseTask.detect(_debugShow, frame, mp_image, data)
 
             # フレームを画面に表示
             if(_debugShow):

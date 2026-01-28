@@ -58,6 +58,11 @@ namespace livegarnet
 		m_ExpressionMap.clear();
 	}
 
+	const std::shared_ptr<CLive2DSkeleton>& CLive2DModel::GetSkeleton() const
+	{
+		return m_Skeleton;
+	}
+
 	bool CLive2DModel::Load(api::IGraphicsAPI* pGraphicsAPI, const std::string& model3Path,
 		const std::string& DefaultMotionGroup, int DefaultMotionIndex, const std::string& DefaultExpression)
 	{

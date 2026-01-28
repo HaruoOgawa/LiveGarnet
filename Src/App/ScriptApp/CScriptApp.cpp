@@ -30,6 +30,7 @@ namespace app
 {
 	CScriptApp::CScriptApp() :
 		m_SceneController(std::make_shared<scene::CSceneController>()),
+		m_MyModelName(std::string()),
 		m_Live2DEngine(std::make_shared<livegarnet::CLive2DEngine>()),
 		m_CameraSwitchToggle(true),
 		m_MainCamera(nullptr),
@@ -86,6 +87,7 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
+		m_MyModelName = "Haru";
 		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
 
 		return true;
@@ -268,13 +270,7 @@ namespace app
 
 		if (head != "LG2D") return true;
 
-		float val = 0.0f;
-		if (!Analyser.GetFloat(val)) return false;
-
-		float val_2 = 0.0f;
-		if (!Analyser.GetFloat(val_2)) return false;
-
-		float x = 0.0f;
+		m_Live2DEngine->OnReceiveData(m_MyModelName, Analyser);
 
 		return true;
 	}
