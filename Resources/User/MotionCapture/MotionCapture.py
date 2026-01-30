@@ -1,12 +1,16 @@
 # https://ai.google.dev/edge/mediapipe/solutions/setup_python?hl=ja
+# pip install mediapipe opencv-python numpy numpy-quaternion
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 import numpy as np
+import quaternion
 import cv2
 from socket import *
 import struct
 import sys
+import math
+import time
 
 # トレーニング済みのモデル
 model_path = "pose_landmarker_heavy.task"
@@ -67,38 +71,82 @@ class CPoseLandmarker:
         if pose_landmarks == None:
             return
         
+        #
+        if len(pose_landmarks) != 33:
+            return
+        
         # ランドマークからポーズの角度を計算
         self.calcPose(pose_landmarks, data)
         
         # デバッグ描画
         if(_debugShow):
             h, w, _= frame.shape
+            index = 0
+
+            right_eye_index      = 2
+            left_eye_index       = 5
+            mouth_right_index    = 9
+            mouth_left_index     = 10
 
             for landmark in pose_landmarks:
                 x = int(w * landmark.x)
                 y = int(h * landmark.y)
 
-                cv2.circle(frame, (x, y), 5, (255, 0, 0), -1)
+                color = (255, 0, 0)
+
+                if index == right_eye_index or index == left_eye_index:
+                    color = (0, 0, 255)
+                elif index == mouth_right_index or index == mouth_left_index:
+                    color = (255, 255, 255)
+
+                cv2.circle(frame, (x, y), 5, color, -1)
+
+                index += 1
 
     def calcPose(self, pose_landmarks, data):
-        # 顔の向き
-        ParamAngleX = 1.0
-        data.extend(struct.pack('<f', ParamAngleX))
+        #
+        nose_index           = 0
+        right_eye_index      = 2
+        left_eye_index       = 5
+        mouth_right_index    = 9
+        mouth_left_index     = 10
+        right_shoulder_index = 11
+        left_shoulder_index  = 12
+
+        #
+        nose_pos = self.getPos(pose_landmarks, nose_index)
+        right_eye_pos = self.getPos(pose_landmarks, right_eye_index)
+        left_eye_pos = self.getPos(pose_landmarks, left_eye_index)
+        mouth_right_pos = self.getPos(pose_landmarks, mouth_right_index)
+        mouth_left_pos = self.getPos(pose_landmarks, mouth_left_index)
+        right_shoulder_pos = self.getPos(pose_landmarks, right_shoulder_index)
+        left_shoulder_pos = self.getPos(pose_landmarks, left_shoulder_index)
+
+        #
+        HeadQuat = self.calcHeadRotate(right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos)
+        print(HeadQuat)
+        print(HeadQuat.x)
+        print(HeadQuat.y)
+        print(HeadQuat.z)
+        print(HeadQuat.w)
         
-        ParamAngleY = 0.0
-        data.extend(struct.pack('<f', ParamAngleY))
-        
-        ParamAngleZ = 0.0
-        data.extend(struct.pack('<f', ParamAngleZ))
+        # 顔の回転(クォータニオン)
+        data.extend(struct.pack('<f', HeadQuat.x))
+        data.extend(struct.pack('<f', HeadQuat.y))
+        data.extend(struct.pack('<f', HeadQuat.z))
+        data.extend(struct.pack('<f', HeadQuat.w))
         
         # 体の向き
         ParamBodyAngleX = 0.0
+        #ParamBodyAngleX = math.sin(time.time() * 20.0) * 30.0
         data.extend(struct.pack('<f', ParamBodyAngleX))
         
         ParamBodyAngleY = 0.0
+        #ParamBodyAngleY = math.sin(time.time() * 20.0) * 30.0
         data.extend(struct.pack('<f', ParamBodyAngleY))
         
         ParamBodyAngleZ = 0.0
+        #ParamBodyAngleY = math.sin(time.time() * 20.0) * 30.0
         data.extend(struct.pack('<f', ParamBodyAngleZ))
         
         # 腕
@@ -114,6 +162,58 @@ class CPoseLandmarker:
         
         ParamHandR = 0.0
         data.extend(struct.pack('<f', ParamHandR))
+
+    def calcHeadRotate(self, right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos):
+        print("__________________________")
+        # print(f"right_eye_pos: {right_eye_pos}")
+        # print(f"left_eye_pos: {left_eye_pos}")
+        # print(f"mouth_right_pos: {mouth_right_pos}")
+        # print(f"mouth_left_pos: {mouth_left_pos}")
+
+        eye_center = (left_eye_pos + right_eye_pos) * 0.5
+        mouth_center = (mouth_left_pos + mouth_right_pos) * 0.5
+
+        YVector = (eye_center - mouth_center)
+        YVector = YVector / np.linalg.norm(YVector)
+
+        XVector = (right_eye_pos - left_eye_pos)
+        XVector = XVector / np.linalg.norm(XVector)
+
+        ZVector = np.cross(XVector, YVector)
+
+        # print(f"left_eye_pos: {left_eye_pos}, right_eye_pos: {right_eye_pos}")
+        print(f"XVector: {XVector}")
+        
+        # print(f"eye_center: {eye_center}, mouth_center: {mouth_center}")
+        print(f"YVector: {YVector}")
+        print(f"ZVector: {ZVector}")
+
+        RotMat = np.column_stack([XVector, YVector, ZVector])
+        Quat = quaternion.from_rotation_matrix(RotMat)
+
+        print(f"Quat: {Quat}")
+
+        # angles = quaternion.as_euler_angles(Quat)
+
+        # angles *= (180.0 / 3.14159265)
+
+        return Quat
+    
+    def getPos(self, pose_landmarks, index):
+        landmark = pose_landmarks[index]
+        pos = np.array([ landmark.x, landmark.y, landmark.z ])
+
+        # MediaPipeはXY成分は左上が(0, 0)で0~1の値をとる
+        # Z成分は-1から1??
+        # なのでXY成分は補正が必要
+        pos[0] = pos[0] * 2.0 - 1.0
+        
+        pos[1] = 1.0 - pos[1]
+        pos[1] = pos[1] * 2.0 - 1.0
+
+        pos[2] *= -1.0
+
+        return pos
         
 #
 def main():

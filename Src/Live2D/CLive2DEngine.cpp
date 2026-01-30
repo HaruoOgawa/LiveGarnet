@@ -2,6 +2,7 @@
 #include <Message/Console.h>
 #include <LoadWorker/CFile.h>
 #include "CLive2DModel.h"
+#include "CLive2DSkeleton.h"
 
 namespace livegarnet
 {
@@ -133,23 +134,32 @@ namespace livegarnet
 		int version = 0;
 		if (!Analyser.GetInt(version)) return false;
 
-		float ParamAngleX = 0.0f;
-		if (!Analyser.GetFloat(ParamAngleX)) return false;
-		
-		float ParamAngleY = 0.0f;
-		if (!Analyser.GetFloat(ParamAngleY)) return false;
-		
-		float ParamAngleZ = 0.0f;
-		if (!Analyser.GetFloat(ParamAngleZ)) return false;
+		glm::quat HeadQuat;
+		if (!Analyser.GetFloat(HeadQuat.x)) return false;
+		if (!Analyser.GetFloat(HeadQuat.y)) return false;
+		if (!Analyser.GetFloat(HeadQuat.z)) return false;
+		if (!Analyser.GetFloat(HeadQuat.w)) return false;
+
+		glm::vec3 HeadEuler = glm::eulerAngles(HeadQuat);
+		HeadEuler.x = glm::degrees(HeadEuler.x);
+		HeadEuler.y = glm::degrees(HeadEuler.y);
+		HeadEuler.z = glm::degrees(HeadEuler.z);
+
+		skeleton->SetCommonBoneValue("ParamAngleX", HeadEuler.x);
+		skeleton->SetCommonBoneValue("ParamAngleY", HeadEuler.y);
+		skeleton->SetCommonBoneValue("ParamAngleZ", HeadEuler.z);
 		
 		float ParamBodyAngleX = 0.0f;
 		if (!Analyser.GetFloat(ParamBodyAngleX)) return false;
+		skeleton->SetCommonBoneValue("ParamBodyAngleX", ParamBodyAngleX);
 		
 		float ParamBodyAngleY = 0.0f;
 		if (!Analyser.GetFloat(ParamBodyAngleY)) return false;
+		skeleton->SetCommonBoneValue("ParamBodyAngleY", ParamBodyAngleY);
 		
 		float ParamBodyAngleZ = 0.0f;
 		if (!Analyser.GetFloat(ParamBodyAngleZ)) return false;
+		skeleton->SetCommonBoneValue("ParamBodyAngleZ", ParamBodyAngleZ);
 		
 		float ParamArmL = 0.0f;
 		if (!Analyser.GetFloat(ParamArmL)) return false;

@@ -88,7 +88,26 @@ namespace app
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
 		m_MyModelName = "Haru";
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0, "F01")) return false;
+
+		/*
+		XVector: [ 0.99536646 0.05760211 -0.07699089]
+		YVector: [-0.008205 0.85464284 0.51915151]
+		ZVector: [ 0.09570394 -0.51611429 0.85115545]
+		Quat: quaternion(0.96191724116285, 0.269074184681431, 0.0449566893342859, 0.0171230948071446)
+		*/
+
+		glm::vec3 x = glm::vec3(0.99536646f, 0.05760211f, -0.07699089f);
+		glm::vec3 y = glm::vec3(-0.008205f, 0.85464284f, 0.51915151f);
+		glm::vec3 z = glm::vec3(0.09570394f, - 0.51611429f, 0.85115545f);
+
+		glm::mat3 R(x, y, z);
+		glm::quat q = glm::quat_cast(R);
+
+		glm::vec3 euler = glm::eulerAngles(q);
+		euler.x = glm::degrees(euler.x);
+		euler.y = glm::degrees(euler.y);
+		euler.z = glm::degrees(euler.z);
 
 		return true;
 	}
