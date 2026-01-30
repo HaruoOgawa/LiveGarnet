@@ -35,6 +35,14 @@ namespace livegarnet
 		return true;
 	}
 
+	bool CLive2DSkeleton::GetCommonBoneValue(const std::string& Name) const
+	{
+		const auto& it = m_CommonBoneMap.find(Name);
+		if (it == m_CommonBoneMap.end()) return 0.0f;
+
+		return it->second.Value;
+	}
+
 	bool CLive2DSkeleton::Update(CubismModel* _model)
 	{
 		for (const auto& Pair : m_CommonBoneMap)

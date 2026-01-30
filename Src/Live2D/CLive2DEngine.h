@@ -1,7 +1,6 @@
 #pragma once
 
 #include <CubismFramework.hpp>
-#include <Binary/CBinaryReader.h>
 #include <memory>
 #include <map>
 #include "CLive2DMemoryAllocator.h"
@@ -12,6 +11,7 @@ namespace api { class IGraphicsAPI; }
 namespace camera { class CCamera; }
 namespace projection { class CProjection; }
 namespace graphics { class CDrawInfo; }
+namespace binary { class CBinaryReader; }
 
 namespace livegarnet
 {
