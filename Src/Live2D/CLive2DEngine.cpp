@@ -134,45 +134,150 @@ namespace livegarnet
 		int version = 0;
 		if (!Analyser.GetInt(version)) return false;
 
-		glm::quat HeadQuat;
-		if (!Analyser.GetFloat(HeadQuat.x)) return false;
-		if (!Analyser.GetFloat(HeadQuat.y)) return false;
-		if (!Analyser.GetFloat(HeadQuat.z)) return false;
-		if (!Analyser.GetFloat(HeadQuat.w)) return false;
+		float Rate = 0.1f;
 
-		glm::vec3 HeadEuler = glm::eulerAngles(HeadQuat);
-		HeadEuler.x = glm::degrees(HeadEuler.x);
-		HeadEuler.y = glm::degrees(HeadEuler.y);
-		HeadEuler.z = glm::degrees(HeadEuler.z);
+		// Head
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
 
-		skeleton->SetCommonBoneValue("ParamAngleX", HeadEuler.x);
-		skeleton->SetCommonBoneValue("ParamAngleY", HeadEuler.y);
-		skeleton->SetCommonBoneValue("ParamAngleZ", HeadEuler.z);
-		
-		float ParamBodyAngleX = 0.0f;
-		if (!Analyser.GetFloat(ParamBodyAngleX)) return false;
-		skeleton->SetCommonBoneValue("ParamBodyAngleX", ParamBodyAngleX);
-		
-		float ParamBodyAngleY = 0.0f;
-		if (!Analyser.GetFloat(ParamBodyAngleY)) return false;
-		skeleton->SetCommonBoneValue("ParamBodyAngleY", ParamBodyAngleY);
-		
-		float ParamBodyAngleZ = 0.0f;
-		if (!Analyser.GetFloat(ParamBodyAngleZ)) return false;
-		skeleton->SetCommonBoneValue("ParamBodyAngleZ", ParamBodyAngleZ);
-		
-		float ParamArmL = 0.0f;
-		if (!Analyser.GetFloat(ParamArmL)) return false;
-		
-		float ParamArmR = 0.0f;
-		if (!Analyser.GetFloat(ParamArmR)) return false;
-		
-		float ParamHandL = 0.0f;
-		if (!Analyser.GetFloat(ParamHandL)) return false;
-		
-		float ParamHandR = 0.0f;
-		if (!Analyser.GetFloat(ParamHandR)) return false;
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
 
+			// Xé≤ï‚ê≥
+			{
+				// Xé≤âÒì]ÇÕê≥ñ Ç™30ìxÇÆÇÁÇ¢Ç»ÇÃÇ≈0ìxÇ…Ç»ÇÈÇÊÇ§Ç…ï‚ê≥Ç∑ÇÈ 
+				Euler.x -= 30.0f;
+
+				// è„â∫ãtÇ…ÇµÇƒÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.x *= -1.0f;
+				Euler.x *= 20.0f;
+			}
+
+			// Yé≤ï‚ê≥
+			{
+				// ç∂âEãtÇ…ÇµÇƒÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.y *= -1.0f;
+				Euler.y *= 20.0f;
+			}
+
+			// Zé≤ï‚ê≥
+			{
+				// ÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.z *= 20.0f;
+			}
+
+			skeleton->SetCommonBoneValue("ParamAngleX", Euler.y, Rate);
+			skeleton->SetCommonBoneValue("ParamAngleY", Euler.x, Rate);
+			skeleton->SetCommonBoneValue("ParamAngleZ", Euler.z, Rate);
+
+			Console::Log("HeadEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
+		}
+		
+		// Body
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+
+			// Xé≤ï‚ê≥
+			{
+				// Xé≤âÒì]ÇÕê≥ñ Ç™65ìxÇÆÇÁÇ¢Ç»ÇÃÇ≈0ìxÇ…Ç»ÇÈÇÊÇ§Ç…ï‚ê≥Ç∑ÇÈ 
+				Euler.x -= 65.0f;
+
+				// è„â∫ãtÇ…ÇµÇƒÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.x *= -1.0f;
+				Euler.x *= 20.0f;
+			}
+
+			// Yé≤ï‚ê≥
+			{
+				// ç∂âEãtÇ…ÇµÇƒÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.y *= -1.0f;
+				Euler.y *= 20.0f;
+			}
+
+			// Zé≤ï‚ê≥
+			{
+				// ÇøÇÂÇ¡Ç∆å÷í£Ç∑ÇÈ
+				Euler.z *= 20.0f;
+			}
+
+			skeleton->SetCommonBoneValue("ParamBodyAngleX", Euler.y, Rate);
+			skeleton->SetCommonBoneValue("ParamBodyAngleY", Euler.x, Rate);
+			skeleton->SetCommonBoneValue("ParamBodyAngleZ", Euler.z, Rate);
+
+			Console::Log("BodyEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
+		}
+		
+		// ç∂òr
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// âEòr
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// ç∂éË
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// âEéË
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+		
 		return true;
 	}
 }

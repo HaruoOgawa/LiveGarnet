@@ -18,7 +18,7 @@ namespace livegarnet
 		CreateCommonBoneList();
 	}
 
-	bool CLive2DSkeleton::SetCommonBoneValue(const std::string& Name, float Value)
+	bool CLive2DSkeleton::SetCommonBoneValue(const std::string& Name, float Value, float Rate)
 	{
 		const auto& it = m_CommonBoneMap.find(Name);
 		if (it == m_CommonBoneMap.end()) return false;
@@ -26,7 +26,8 @@ namespace livegarnet
 		auto& Bone = m_CommonBoneMap[Name];
 
 		float Result = fmaxf(fminf(Value, Bone.Max), Bone.Min);
-		
+		Result = (1.0f - Rate) * Bone.Value + Rate * Result;
+
 		// このボーンは今後更新値を使うことを宣言
 		Bone.Updated = true;
 		Bone.Value = Result;

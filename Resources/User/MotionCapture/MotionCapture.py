@@ -124,12 +124,12 @@ class CPoseLandmarker:
 
         #
         HeadQuat = self.calcHeadRotate(right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos)
-        print(HeadQuat)
-        print(HeadQuat.x)
-        print(HeadQuat.y)
-        print(HeadQuat.z)
-        print(HeadQuat.w)
-        
+        BodyQuat = self.calcBodyRotate(nose_pos, right_shoulder_pos, left_shoulder_pos)
+        LArmQuat = quaternion.quaternion(1.0, 0.0, 0.0, 0.0)
+        RArmQuat = quaternion.quaternion(1.0, 0.0, 0.0, 0.0)
+        LHandQuat = quaternion.quaternion(1.0, 0.0, 0.0, 0.0)
+        RHandQuat = quaternion.quaternion(1.0, 0.0, 0.0, 0.0)
+
         # 顔の回転(クォータニオン)
         data.extend(struct.pack('<f', HeadQuat.x))
         data.extend(struct.pack('<f', HeadQuat.y))
@@ -137,39 +137,36 @@ class CPoseLandmarker:
         data.extend(struct.pack('<f', HeadQuat.w))
         
         # 体の向き
-        ParamBodyAngleX = 0.0
-        #ParamBodyAngleX = math.sin(time.time() * 20.0) * 30.0
-        data.extend(struct.pack('<f', ParamBodyAngleX))
+        data.extend(struct.pack('<f', BodyQuat.x))
+        data.extend(struct.pack('<f', BodyQuat.y))
+        data.extend(struct.pack('<f', BodyQuat.z))
+        data.extend(struct.pack('<f', BodyQuat.w))
         
-        ParamBodyAngleY = 0.0
-        #ParamBodyAngleY = math.sin(time.time() * 20.0) * 30.0
-        data.extend(struct.pack('<f', ParamBodyAngleY))
+        # 左腕
+        data.extend(struct.pack('<f', LArmQuat.x))
+        data.extend(struct.pack('<f', LArmQuat.y))
+        data.extend(struct.pack('<f', LArmQuat.z))
+        data.extend(struct.pack('<f', LArmQuat.w))
         
-        ParamBodyAngleZ = 0.0
-        #ParamBodyAngleY = math.sin(time.time() * 20.0) * 30.0
-        data.extend(struct.pack('<f', ParamBodyAngleZ))
+        # 右腕
+        data.extend(struct.pack('<f', RArmQuat.x))
+        data.extend(struct.pack('<f', RArmQuat.y))
+        data.extend(struct.pack('<f', RArmQuat.z))
+        data.extend(struct.pack('<f', RArmQuat.w))
         
-        # 腕
-        ParamArmL = 0.0
-        data.extend(struct.pack('<f', ParamArmL))
+        # 左手
+        data.extend(struct.pack('<f', LHandQuat.x))
+        data.extend(struct.pack('<f', LHandQuat.y))
+        data.extend(struct.pack('<f', LHandQuat.z))
+        data.extend(struct.pack('<f', LHandQuat.w))
         
-        ParamArmR = 0.0
-        data.extend(struct.pack('<f', ParamArmR))
-        
-        # 手
-        ParamHandL = 0.0
-        data.extend(struct.pack('<f', ParamHandL))
-        
-        ParamHandR = 0.0
-        data.extend(struct.pack('<f', ParamHandR))
+        # 右手
+        data.extend(struct.pack('<f', RHandQuat.x))
+        data.extend(struct.pack('<f', RHandQuat.y))
+        data.extend(struct.pack('<f', RHandQuat.z))
+        data.extend(struct.pack('<f', RHandQuat.w))
 
     def calcHeadRotate(self, right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos):
-        print("__________________________")
-        # print(f"right_eye_pos: {right_eye_pos}")
-        # print(f"left_eye_pos: {left_eye_pos}")
-        # print(f"mouth_right_pos: {mouth_right_pos}")
-        # print(f"mouth_left_pos: {mouth_left_pos}")
-
         eye_center = (left_eye_pos + right_eye_pos) * 0.5
         mouth_center = (mouth_left_pos + mouth_right_pos) * 0.5
 
@@ -181,21 +178,24 @@ class CPoseLandmarker:
 
         ZVector = np.cross(XVector, YVector)
 
-        # print(f"left_eye_pos: {left_eye_pos}, right_eye_pos: {right_eye_pos}")
-        print(f"XVector: {XVector}")
-        
-        # print(f"eye_center: {eye_center}, mouth_center: {mouth_center}")
-        print(f"YVector: {YVector}")
-        print(f"ZVector: {ZVector}")
-
         RotMat = np.column_stack([XVector, YVector, ZVector])
         Quat = quaternion.from_rotation_matrix(RotMat)
 
-        print(f"Quat: {Quat}")
+        return Quat
+    
+    def calcBodyRotate(self, nose_pos, right_shoulder_pos, left_shoulder_pos):
+        shoulder_center = (right_shoulder_pos + left_shoulder_pos) * 0.5
 
-        # angles = quaternion.as_euler_angles(Quat)
+        YVector = nose_pos - shoulder_center
+        YVector = YVector / np.linalg.norm(YVector)
 
-        # angles *= (180.0 / 3.14159265)
+        XVector = (right_shoulder_pos - left_shoulder_pos)
+        XVector = XVector / np.linalg.norm(XVector)
+
+        ZVector = np.cross(XVector, YVector)
+
+        RotMat = np.column_stack([XVector, YVector, ZVector])
+        Quat = quaternion.from_rotation_matrix(RotMat)
 
         return Quat
     

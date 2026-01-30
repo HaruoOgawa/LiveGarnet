@@ -142,11 +142,6 @@ namespace livegarnet
 			_expressionManager->UpdateMotion(_model, DeltaTime);
 		}
 
-		/*static float time = 0.0f;
-		time += DeltaTime;
-
-		m_Skeleton->SetCommonBoneValue("ParamAngleY", glm::sin(time * 10.0f) * 30.0f);*/
-
 		// スケルトン更新
 		if (!m_Skeleton->Update(_model)) return false;
 

@@ -34,7 +34,7 @@ namespace livegarnet
 
 		void Create();
 		
-		bool SetCommonBoneValue(const std::string& BoneName, float Value);
+		bool SetCommonBoneValue(const std::string& BoneName, float Value, float Rate);
 
 		bool Update(CubismModel* _model);
 	};
