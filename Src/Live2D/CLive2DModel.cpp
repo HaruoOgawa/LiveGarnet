@@ -25,7 +25,8 @@ namespace livegarnet
 		m_DefaultMotionIndex(-1),
 		m_DefaultExpression(std::string()),
 		m_Renderer(std::make_unique<CLive2DRenderer>(this)),
-		m_Skeleton(std::make_shared<CLive2DSkeleton>())
+		m_Skeleton(std::make_shared<CLive2DSkeleton>()),
+		m_Timecode(0)
 	{
 #ifdef USE_OPENGL
 		m_Renderer = std::make_unique<CLive2DOpenGLRenderer>(this);
@@ -233,6 +234,183 @@ namespace livegarnet
 		if (!pMotion) return false;
 
 		_expressionManager->StartMotion(pMotion, false);
+
+		return true;
+	}
+
+	bool CLive2DModel::OnReceiveData(binary::CBinaryReader& Analyser)
+	{
+		if (!m_Skeleton) return true;
+
+		int version = 0;
+		if (!Analyser.GetInt(version)) return false;
+
+		int firstFlag = 0;
+		if (!Analyser.GetInt(firstFlag)) return false;
+
+		// 最初のデータならタイムコードをリセット
+		bool firstMsg = (firstFlag == 1);
+		if (firstMsg)
+		{
+			m_Timecode = 0;
+		}
+
+		// タイムコード
+		int ReceivedTimecode = 0;
+		if (!Analyser.GetInt(ReceivedTimecode)) return false;
+
+		// 古いデータが来たら捨てる
+		if (ReceivedTimecode < m_Timecode) return true;
+
+		// 新しいデータなのでタイムコードを更新する
+		m_Timecode = ReceivedTimecode;
+
+		float Rate = 0.5f;
+
+		// Head
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+
+			m_Skeleton->SetCommonBoneValue
+
+			// X軸補正
+			{
+				// X軸回転は正面が30度ぐらいなので0度になるように補正する 
+				Euler.x -= 30.0f;
+
+				// 上下逆にしてちょっと誇張する
+				Euler.x *= -1.0f;
+				Euler.x *= 10.0f;
+			}
+
+			// Y軸補正
+			{
+				// 左右逆にしてちょっと誇張する
+				Euler.y *= -1.0f;
+				Euler.y *= 10.0f;
+			}
+
+			// Z軸補正
+			{
+				// ちょっと誇張する
+				Euler.z *= -1.0f;
+				Euler.z *= 10.0f;
+			}
+
+			m_Skeleton->SetCommonBoneValue("ParamAngleX", Euler.y, Rate);
+			m_Skeleton->SetCommonBoneValue("ParamAngleY", Euler.x, Rate);
+			m_Skeleton->SetCommonBoneValue("ParamAngleZ", Euler.z, Rate);
+
+			Console::Log("HeadEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
+		}
+
+		// Body
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+
+			/*// X軸補正
+			{
+				// X軸回転は正面が65度ぐらいなので0度になるように補正する 
+				Euler.x -= 65.0f;
+
+				// 上下逆にしてちょっと誇張する
+				Euler.x *= -1.0f;
+				Euler.x *= 20.0f;
+			}
+
+			// Y軸補正
+			{
+				// 左右逆にしてちょっと誇張する
+				Euler.y *= -1.0f;
+				Euler.y *= 20.0f;
+			}
+
+			// Z軸補正
+			{
+				// ちょっと誇張する
+				Euler.z *= 20.0f;
+			}*/
+
+			/*m_Skeleton->SetCommonBoneValue("ParamBodyAngleX", Euler.y, Rate);
+			m_Skeleton->SetCommonBoneValue("ParamBodyAngleY", Euler.x, Rate);
+			m_Skeleton->SetCommonBoneValue("ParamBodyAngleZ", Euler.z, Rate);*/
+
+			//Console::Log("BodyEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
+		}
+
+		// 左腕
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// 右腕
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// 左手
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
+
+		// 右手
+		{
+			glm::quat Quat;
+			if (!Analyser.GetFloat(Quat.x)) return false;
+			if (!Analyser.GetFloat(Quat.y)) return false;
+			if (!Analyser.GetFloat(Quat.z)) return false;
+			if (!Analyser.GetFloat(Quat.w)) return false;
+
+			glm::vec3 Euler = glm::eulerAngles(Quat);
+			Euler.x = glm::degrees(Euler.x);
+			Euler.y = glm::degrees(Euler.y);
+			Euler.z = glm::degrees(Euler.z);
+		}
 
 		return true;
 	}

@@ -4,6 +4,8 @@
 #include <string>
 #include <map>
 
+#include <Binary/CBinaryReader.h>
+
 #include <ICubismModelSetting.hpp>
 #include <Model/CubismUserModel.hpp>
 #include <Motion/CubismMotionManager.hpp>
@@ -43,6 +45,8 @@ namespace livegarnet
 		// Live2DƒXƒPƒ‹ƒgƒ“
 		std::shared_ptr<CLive2DSkeleton> m_Skeleton;
 
+		int m_Timecode;
+
 	private:
 		void Release();
 
@@ -70,5 +74,7 @@ namespace livegarnet
 
 		bool ChangeMotion(const std::string& MotionGroup, int Index);
 		bool ChangeExpression(const std::string& ExpressionName);
+
+		bool OnReceiveData(binary::CBinaryReader& Analyser);
 	};
 }

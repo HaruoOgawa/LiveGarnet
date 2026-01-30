@@ -232,6 +232,13 @@ def main():
     # opencvで0番目のWebカメラを起動
     cap = cv2.VideoCapture(0)
 
+    # 最初のデータ送信かの判定
+    # 最初のデータなら受信側で初期化を行ったりする
+    firstMsg = True
+
+    #
+    frameIndex = 0
+
     while cap.isOpened():
         # Webカメラの映像を取得
         ret, frame = cap.read()
@@ -254,6 +261,14 @@ def main():
             version = 1
             data.extend(struct.pack('<i', version))
 
+            # 最初のデータ
+            flag = 1 if(firstMsg) else 0
+            data.extend(struct.pack('<i', flag))
+            firstMsg = False
+
+            # タイムコード 
+            data.extend(struct.pack('<i', frameIndex))
+
             # Pose検出
             if(poseTask.IsLoaded()):
                 poseTask.detect(_debugShow, frame, mp_image, data)
@@ -264,6 +279,8 @@ def main():
 
             # データ送信
             udp.Send(data)
+
+            frameIndex += 1
 
         else:
             break
