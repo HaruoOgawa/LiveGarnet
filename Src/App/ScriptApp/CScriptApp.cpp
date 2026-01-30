@@ -3,6 +3,7 @@
 #include <Graphics/CDrawInfo.h>
 #include <Graphics/CFrameRenderer.h>
 #include <Graphics/PostProcess/CPostProcess.h>
+#include <Binary/CBinaryReader.h>
 
 #include <Camera/CCamera.h>
 #include <Camera/CTraceCamera.h>
@@ -21,10 +22,15 @@
 #include "../../GUIApp/Model/CFileModifier.h"
 #include "../../Live2D/CLive2DEngine.h"
 
+#ifdef USE_NETWORK
+#include <Network/CUDPSocket.h>
+#endif
+
 namespace app
 {
 	CScriptApp::CScriptApp() :
 		m_SceneController(std::make_shared<scene::CSceneController>()),
+		m_MyModelName(std::string()),
 		m_Live2DEngine(std::make_shared<livegarnet::CLive2DEngine>()),
 		m_CameraSwitchToggle(true),
 		m_MainCamera(nullptr),
@@ -39,6 +45,9 @@ namespace app
 #ifdef USE_GUIENGINE
 		m_GraphicsEditingWindow(std::make_shared<gui::CGraphicsEditingWindow>()),
 #endif // USE_GUIENGINE
+#ifdef USE_NETWORK
+		m_UDPSocket(std::make_shared<network::CUDPSocket>("127.0.0.1", 5000)),
+#endif // USE_NETWORK
 		m_FileModifier(std::make_shared<CFileModifier>()),
 		m_TimelineController(std::make_shared<timeline::CTimelineController>())
 	{
@@ -58,12 +67,16 @@ namespace app
 
 	bool CScriptApp::Release(api::IGraphicsAPI* pGraphicsAPI)
 	{
+		m_UDPSocket->Close();
+
 		return true;
 	}
 
 	bool CScriptApp::Initialize(api::IGraphicsAPI* pGraphicsAPI, physics::IPhysicsEngine* pPhysicsEngine, resource::CLoadWorker* pLoadWorker)
 	{
 		pLoadWorker->AddScene(std::make_shared<resource::CSceneLoader>("Resources\\User\\Scene\\Sample.json", m_SceneController));
+
+		if (!m_UDPSocket->Initialize(shared_from_this(), true)) return false;
 
 		if (!pGraphicsAPI->CreateRenderPass("MainResultPass", api::ERenderPassFormat::COLOR_FLOAT_RENDERPASS, -1, -1)) return false;
 		
@@ -74,7 +87,27 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
+		m_MyModelName = "Haru";
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0, "F01")) return false;
+
+		/*
+		XVector: [ 0.99536646 0.05760211 -0.07699089]
+		YVector: [-0.008205 0.85464284 0.51915151]
+		ZVector: [ 0.09570394 -0.51611429 0.85115545]
+		Quat: quaternion(0.96191724116285, 0.269074184681431, 0.0449566893342859, 0.0171230948071446)
+		*/
+
+		glm::vec3 x = glm::vec3(0.99536646f, 0.05760211f, -0.07699089f);
+		glm::vec3 y = glm::vec3(-0.008205f, 0.85464284f, 0.51915151f);
+		glm::vec3 z = glm::vec3(0.09570394f, - 0.51611429f, 0.85115545f);
+
+		glm::mat3 R(x, y, z);
+		glm::quat q = glm::quat_cast(R);
+
+		glm::vec3 euler = glm::eulerAngles(q);
+		euler.x = glm::degrees(euler.x);
+		euler.y = glm::degrees(euler.y);
+		euler.z = glm::degrees(euler.z);
 
 		return true;
 	}
@@ -242,6 +275,21 @@ namespace app
 				}
 			}
 		}
+
+		return true;
+	}
+
+	// バイナリ受信イベント
+	bool CScriptApp::OnReceiveBinary(const std::vector<unsigned char>& Binary)
+	{
+		binary::CBinaryReader Analyser(Binary);
+
+		std::string head = std::string();
+		if (!Analyser.GetString(head, 4)) return false;
+
+		if (head != "LG2D") return true;
+
+		m_Live2DEngine->OnReceiveData(m_MyModelName, Analyser);
 
 		return true;
 	}

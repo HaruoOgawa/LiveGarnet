@@ -12,6 +12,8 @@ namespace scene { class CSceneController; }
 namespace camera { class CTraceCamera; }
 namespace livegarnet { class CLive2DEngine; }
 
+namespace network { class CUDPSocket; }
+
 namespace app
 {
 	class CFileModifier;
@@ -20,6 +22,7 @@ namespace app
 	{
 		std::shared_ptr<scene::CSceneController> m_SceneController;
 
+		std::string m_MyModelName;
 		std::shared_ptr<livegarnet::CLive2DEngine> m_Live2DEngine;
 
 		std::shared_ptr<camera::CCamera> m_MainCamera;
@@ -38,6 +41,10 @@ namespace app
 		std::shared_ptr<timeline::CTimelineController> m_TimelineController;
 
 		bool m_CameraSwitchToggle;
+
+#ifdef USE_NETWORK
+		std::shared_ptr<network::CUDPSocket> m_UDPSocket;
+#endif
 
 	public:
 		CScriptApp();
@@ -62,6 +69,9 @@ namespace app
 
 		// ロード完了イベント
 		virtual bool OnLoaded(api::IGraphicsAPI* pGraphicsAPI, physics::IPhysicsEngine* pPhysicsEngine, resource::CLoadWorker* pLoadWorker, const std::shared_ptr<gui::IGUIEngine>& GUIEngine) override;
+
+		// バイナリ受信イベント
+		virtual bool OnReceiveBinary(const std::vector<unsigned char>& Binary) override;
 
 		// フォーカスイベント
 		virtual void OnFocus(bool Focused, api::IGraphicsAPI* pGraphicsAPI, resource::CLoadWorker* pLoadWorker) override;

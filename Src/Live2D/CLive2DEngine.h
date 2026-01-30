@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CubismFramework.hpp>
-
+#include <Binary/CBinaryReader.h>
 #include <memory>
 #include <map>
 #include "CLive2DMemoryAllocator.h"
@@ -48,5 +48,7 @@ namespace livegarnet
 
 		bool ChangeMotion(const std::string& ModelName, const std::string& MotionGroup, int Index);
 		bool ChangeExpression(const std::string& ModelName, const std::string& ExpressionName);
+
+		bool OnReceiveData(const std::string& ModelName, binary::CBinaryReader& Analyser);
 	};
 }
