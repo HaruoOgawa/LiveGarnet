@@ -5,7 +5,8 @@
 #include <map>
 
 #include <Binary/CBinaryReader.h>
-
+#include <glm/glm.hpp>
+#include <Math/CTransform.h>
 #include <ICubismModelSetting.hpp>
 #include <Model/CubismUserModel.hpp>
 #include <Motion/CubismMotionManager.hpp>
@@ -26,6 +27,8 @@ namespace livegarnet
 	class CLive2DModel : public CubismUserModel
 	{
 		std::string m_RootDirectory;
+
+		math::CTransform m_Transform;
 
 		// ÉÇÉfÉãê›íË
 		std::shared_ptr<ICubismModelSetting> m_ModelSetting;
@@ -61,6 +64,10 @@ namespace livegarnet
 	public:
 		CLive2DModel();
 		virtual ~CLive2DModel();
+
+		void SetPos(const glm::vec3& Pos);
+		void SetRot(const glm::quat& Rot);
+		void SetScale(const glm::vec3& Scale);
 
 		const std::shared_ptr<CLive2DSkeleton>& GetSkeleton() const;
 

@@ -385,7 +385,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_GLFW;USE_OPENGL;NOMINMAX;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;USE_BINARY_READ;CSM_TARGET_WIN_GL;USE_NETWORK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;USE_GLFW;USE_OPENGL;NOMINMAX;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;USE_BINARY_READ;CSM_TARGET_WIN_GL;USE_NETWORK;USE_DRAW_SORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\Garnet\Garnet\Src;..\Garnet\Garnet\Src\Library\glm;..\Garnet\Garnet\Src\Library\imgui\backends;..\Garnet\Garnet\Src\Library\imgui;..\Garnet\Garnet\Src\Library\json;..\Garnet\Garnet\src\Library\GLFW\include;$(ProjectDir)Src\Library\Live2D\Core\include;$(ProjectDir)Src\Library\Live2D\Framework\src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -404,7 +404,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;RUNTIME_SHADER_EDITING;USE_OPENGL;NOMINMAX;USE_WIN32_WindowAPI;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;RUNTIME_SHADER_EDITING;USE_OPENGL;NOMINMAX;USE_WIN32_WindowAPI;USE_TEXTURE_LOADER;USE_GLTF;USE_VIEWER_CAMERA;USE_INPUT_SYSTEM;USE_GPGPU;USE_FBX;USE_ANIMATION;USE_MMD;USE_PHYSICS;B3_USE_CLEW;USE_GUIENGINE;USE_GUI_APP;USE_BINARY_WRITE;USE_DRAW_SORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\Garnet\Garnet\Src;..\Garnet\Garnet\Src\Library\glm;..\Garnet\Garnet\Src\Library\imgui\backends;..\Garnet\Garnet\Src\Library\imgui;..\Garnet\Garnet\Src\Library\json;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
@@ -504,6 +504,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Src\Live2D\Renderer\CLive2DDrawObj.cpp" />
     <ClCompile Include="Src\Live2D\CLive2DSkeleton.cpp" />
     <ClCompile Include="Src\Live2D\Renderer\OpenGL\CLive2DOpenGLRenderer.cpp" />
     <ClCompile Include="Src\Live2D\Renderer\CLive2DRenderer.cpp" />
@@ -568,6 +569,7 @@ xcopy $(ProjectDir)..\Garnet\Garnet\Src\Library\RTXGI-DDGI\bin\Release\rtxgi-vul
     <ClCompile Include="Src\Main\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Src\Live2D\Renderer\CLive2DDrawObj.h" />
     <ClInclude Include="Src\Live2D\CLive2DSkeleton.h" />
     <ClInclude Include="Src\Live2D\Renderer\OpenGL\CLive2DOpenGLRenderer.h" />
     <ClInclude Include="Src\Live2D\Renderer\CLive2DRenderer.h" />

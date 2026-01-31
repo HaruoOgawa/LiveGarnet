@@ -120,6 +120,31 @@ namespace livegarnet
 		return true;
 	}
 
+
+	void CLive2DEngine::SetPos(const std::string& ModelName, const glm::vec3& Pos)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return;
+
+		it->second->SetPos(Pos);
+	}
+
+	void CLive2DEngine::SetRot(const std::string& ModelName, const glm::quat& Rot)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return;
+
+		it->second->SetRot(Rot);
+	}
+
+	void CLive2DEngine::SetScale(const std::string& ModelName, const glm::vec3& Scale)
+	{
+		const auto& it = m_ModelMap.find(ModelName);
+		if (it == m_ModelMap.end()) return;
+
+		it->second->SetScale(Scale);
+	}
+
 	bool CLive2DEngine::OnReceiveData(const std::string& ModelName, binary::CBinaryReader& Analyser)
 	{
 		const auto& it = m_ModelMap.find(ModelName);

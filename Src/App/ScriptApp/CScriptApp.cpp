@@ -51,7 +51,8 @@ namespace app
 		m_FileModifier(std::make_shared<CFileModifier>()),
 		m_TimelineController(std::make_shared<timeline::CTimelineController>())
 	{
-		m_ViewCamera->SetPos(glm::vec3(0.0f, 0.0f, 1.0f));
+		m_ViewCamera->SetPos(glm::vec3(0.0f, -1.0f, 5.45f));
+		m_ViewCamera->SetCenter(glm::vec3(0.0f, -1.0f, 4.75f));
 		m_MainCamera = m_ViewCamera;
 
 		m_DrawInfo->GetLightCamera()->SetPos(glm::vec3(-2.358f, 15.6f, -0.59f));
@@ -87,27 +88,9 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
-		m_MyModelName = "Haru";
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, "Haru", "Resources/User/Live2D/Haru/Haru.model3.json", "Idle", 0, "F01")) return false;
-
-		/*
-		XVector: [ 0.99536646 0.05760211 -0.07699089]
-		YVector: [-0.008205 0.85464284 0.51915151]
-		ZVector: [ 0.09570394 -0.51611429 0.85115545]
-		Quat: quaternion(0.96191724116285, 0.269074184681431, 0.0449566893342859, 0.0171230948071446)
-		*/
-
-		glm::vec3 x = glm::vec3(0.99536646f, 0.05760211f, -0.07699089f);
-		glm::vec3 y = glm::vec3(-0.008205f, 0.85464284f, 0.51915151f);
-		glm::vec3 z = glm::vec3(0.09570394f, - 0.51611429f, 0.85115545f);
-
-		glm::mat3 R(x, y, z);
-		glm::quat q = glm::quat_cast(R);
-
-		glm::vec3 euler = glm::eulerAngles(q);
-		euler.x = glm::degrees(euler.x);
-		euler.y = glm::degrees(euler.y);
-		euler.z = glm::degrees(euler.z);
+		m_MyModelName = "Mao";
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, m_MyModelName, "Resources/User/Live2D/Mao/Mao.model3.json", "Idle", 0, "exp_01")) return false;
+		m_Live2DEngine->SetPos(m_MyModelName, glm::vec3(0.0f, -1.25f, 4.75f));
 
 		return true;
 	}
@@ -153,16 +136,16 @@ namespace app
 			}
 		}
 
-		if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_1)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 0);
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_2)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 1);
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_3)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 2);
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_4)) m_Live2DEngine->ChangeMotion("Haru", "TapBody", 3);
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeExpression("Haru", "F01");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression("Haru", "F02");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression("Haru", "F03");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression("Haru", "F04");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression("Haru", "F05");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression("Haru", "F06");
+		if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_1)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 0);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_2)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 1);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_3)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 2);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_4)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 3);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 4);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_02");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_03");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_04");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_05");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_06");
 
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
 

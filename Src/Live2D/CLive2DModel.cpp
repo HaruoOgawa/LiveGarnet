@@ -15,6 +15,7 @@
 #elif USE_VULKAN
 #elif USE_WEBGPU
 #endif
+#include "Renderer/CLive2DDrawObj.h"
 
 namespace livegarnet
 {
@@ -59,6 +60,21 @@ namespace livegarnet
 		m_ExpressionMap.clear();
 	}
 
+	void CLive2DModel::SetPos(const glm::vec3& Pos)
+	{
+		m_Transform.SetPos(Pos);
+	}
+
+	void CLive2DModel::SetRot(const glm::quat& Rot)
+	{
+		m_Transform.SetRot(Rot);
+	}
+
+	void CLive2DModel::SetScale(const glm::vec3& Scale)
+	{
+		m_Transform.SetScale(Scale);
+	}
+
 	const std::shared_ptr<CLive2DSkeleton>& CLive2DModel::GetSkeleton() const
 	{
 		return m_Skeleton;
@@ -91,11 +107,6 @@ namespace livegarnet
 		if (!LoadExpressionList(m_RootDirectory)) return false;
 
 		// ToDo: 残りの項目は後回し(まばたき、リップシンク、ユーザーデータ)
-
-		// レイアウトから初期位置を設定
-		csmMap<csmString, csmFloat32> layout;
-		m_ModelSetting->GetLayoutMap(layout);
-		_modelMatrix->SetupFromLayout(layout);
 
 		// 初期パラメーターを保存
 		_model->SaveParameters();
@@ -173,14 +184,20 @@ namespace livegarnet
 		if (!_model) return true;
 
 		// MVP行列の計算
-		glm::mat4 ProjViewMat = Projection->GetPerspectiveMatrix() * Camera->GetViewMatrix();
+		glm::mat4 MVPMat_glm = Projection->GetPerspectiveMatrix() * Camera->GetViewMatrix() * m_Transform.GetModelMatrix();
 
 		CubismMatrix44 MVPMat;
-		MVPMat.SetMatrix(&ProjViewMat[0][0]);
+		MVPMat.SetMatrix(&MVPMat_glm[0][0]);
 
-		MVPMat.MultiplyByMatrix(_modelMatrix);
+#ifdef USE_DRAW_SORT
+		float ToCameraDist = glm::distance(m_Transform.GetPos(), Camera->GetPos());
 
+		std::shared_ptr<CLive2DDrawObj> DrawObj = std::make_shared<CLive2DDrawObj>(2000, ToCameraDist, MVPMat, m_Renderer.get());
+
+		if (!pGraphicsAPI->AddDrawObj(DrawObj)) return false;
+#else
 		if (!m_Renderer->Draw(MVPMat)) return false;
+#endif // USE_DRAW_SORT
 
 		return true;
 	}
@@ -265,7 +282,7 @@ namespace livegarnet
 		// 新しいデータなのでタイムコードを更新する
 		m_Timecode = ReceivedTimecode;
 
-		float Rate = 0.5f;
+		float Rate = 1.0f;
 
 		// Head
 		{
@@ -279,8 +296,6 @@ namespace livegarnet
 			Euler.x = glm::degrees(Euler.x);
 			Euler.y = glm::degrees(Euler.y);
 			Euler.z = glm::degrees(Euler.z);
-
-			m_Skeleton->SetCommonBoneValue
 
 			// X軸補正
 			{
@@ -296,21 +311,21 @@ namespace livegarnet
 			{
 				// 左右逆にしてちょっと誇張する
 				Euler.y *= -1.0f;
-				Euler.y *= 10.0f;
+				Euler.y *= 3.0f;
 			}
 
-			// Z軸補正
+			/*// Z軸補正
 			{
 				// ちょっと誇張する
 				Euler.z *= -1.0f;
 				Euler.z *= 10.0f;
-			}
+			}*/
 
 			m_Skeleton->SetCommonBoneValue("ParamAngleX", Euler.y, Rate);
 			m_Skeleton->SetCommonBoneValue("ParamAngleY", Euler.x, Rate);
-			m_Skeleton->SetCommonBoneValue("ParamAngleZ", Euler.z, Rate);
+			//m_Skeleton->SetCommonBoneValue("ParamAngleZ", Euler.z, Rate);
 
-			Console::Log("HeadEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
+			//Console::Log("HeadEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
 		}
 
 		// Body
@@ -334,24 +349,24 @@ namespace livegarnet
 				// 上下逆にしてちょっと誇張する
 				Euler.x *= -1.0f;
 				Euler.x *= 20.0f;
-			}
+			}*/
 
 			// Y軸補正
 			{
 				// 左右逆にしてちょっと誇張する
 				Euler.y *= -1.0f;
-				Euler.y *= 20.0f;
+				Euler.y *= 3.0f;
 			}
 
-			// Z軸補正
+			/*// Z軸補正
 			{
 				// ちょっと誇張する
 				Euler.z *= 20.0f;
 			}*/
 
-			/*m_Skeleton->SetCommonBoneValue("ParamBodyAngleX", Euler.y, Rate);
+			m_Skeleton->SetCommonBoneValue("ParamBodyAngleX", Euler.y, Rate);
 			m_Skeleton->SetCommonBoneValue("ParamBodyAngleY", Euler.x, Rate);
-			m_Skeleton->SetCommonBoneValue("ParamBodyAngleZ", Euler.z, Rate);*/
+			//m_Skeleton->SetCommonBoneValue("ParamBodyAngleZ", Euler.z, Rate);
 
 			//Console::Log("BodyEuler => x: %f, y: %f, z: %f\n", Euler.x, Euler.y, Euler.z);
 		}
