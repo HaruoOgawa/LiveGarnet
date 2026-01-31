@@ -16,6 +16,6 @@ git clone https://github.com/HaruoOgawa/LiveGarnet.git
 <img width="600" height="357" alt="image" src="https://github.com/user-attachments/assets/78e3806d-5295-44c4-9f59-a0d8325dce3a" />
 
 4. LiveGarnet\LiveGarnet.slnをVisual Studio 2022で開き、ソリューション構成をDebugGLFWとしてビルドする
-5. ビルドしてできたx64/ソリューション構成をDebugGLFWとしてビルドするにResourcesフォルダをコピー
+5. ビルドしてできたx64/DebugGLFWフォルダにLiveGarnet/Resourcesフォルダをコピー
 6. x64\DebugGLFW\LiveGarnet.exeを実行
 7. キーボードの「0 ~ 1」を押して表情やモーションを変更します
