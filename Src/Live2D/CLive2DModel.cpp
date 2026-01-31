@@ -59,6 +59,21 @@ namespace livegarnet
 		m_ExpressionMap.clear();
 	}
 
+	void CLive2DModel::SetPos(const glm::vec3& Pos)
+	{
+		m_Transform.SetPos(Pos);
+	}
+
+	void CLive2DModel::SetRot(const glm::quat& Rot)
+	{
+		m_Transform.SetRot(Rot);
+	}
+
+	void CLive2DModel::SetScale(const glm::vec3& Scale)
+	{
+		m_Transform.SetScale(Scale);
+	}
+
 	const std::shared_ptr<CLive2DSkeleton>& CLive2DModel::GetSkeleton() const
 	{
 		return m_Skeleton;
@@ -91,11 +106,6 @@ namespace livegarnet
 		if (!LoadExpressionList(m_RootDirectory)) return false;
 
 		// ToDo: 残りの項目は後回し(まばたき、リップシンク、ユーザーデータ)
-
-		// レイアウトから初期位置を設定
-		csmMap<csmString, csmFloat32> layout;
-		m_ModelSetting->GetLayoutMap(layout);
-		_modelMatrix->SetupFromLayout(layout);
 
 		// 初期パラメーターを保存
 		_model->SaveParameters();
@@ -173,12 +183,10 @@ namespace livegarnet
 		if (!_model) return true;
 
 		// MVP行列の計算
-		glm::mat4 ProjViewMat = Projection->GetPerspectiveMatrix() * Camera->GetViewMatrix();
+		glm::mat4 MVPMat_glm = Projection->GetPerspectiveMatrix() * Camera->GetViewMatrix() * m_Transform.GetModelMatrix();
 
 		CubismMatrix44 MVPMat;
-		MVPMat.SetMatrix(&ProjViewMat[0][0]);
-
-		MVPMat.MultiplyByMatrix(_modelMatrix);
+		MVPMat.SetMatrix(&MVPMat_glm[0][0]);
 
 		if (!m_Renderer->Draw(MVPMat)) return false;
 

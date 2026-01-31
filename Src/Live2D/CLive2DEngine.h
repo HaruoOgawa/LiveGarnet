@@ -3,6 +3,7 @@
 #include <CubismFramework.hpp>
 #include <memory>
 #include <map>
+#include <glm/glm.hpp>
 #include "CLive2DMemoryAllocator.h"
 
 using namespace Csm;
@@ -48,6 +49,10 @@ namespace livegarnet
 
 		bool ChangeMotion(const std::string& ModelName, const std::string& MotionGroup, int Index);
 		bool ChangeExpression(const std::string& ModelName, const std::string& ExpressionName);
+
+		void SetPos(const std::string& ModelName, const glm::vec3& Pos);
+		void SetRot(const std::string& ModelName, const glm::quat& Rot);
+		void SetScale(const std::string& ModelName, const glm::vec3& Scale);
 
 		bool OnReceiveData(const std::string& ModelName, binary::CBinaryReader& Analyser);
 	};
