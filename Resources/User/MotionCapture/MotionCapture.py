@@ -44,6 +44,81 @@ class CPoseLandmarker:
     def __init__(self):
         self._Loaded = False
 
+        self._max_frame = 2
+        self._current_frame = 0
+
+        self._sum_of_landmark = [
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+        ]
+
+        self._current_landmark = [
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+            np.array([ 0.0, 0.0, 0.0 ]),
+        ]
+
     def IsLoaded(self):
         return self._Loaded
     
@@ -62,21 +137,18 @@ class CPoseLandmarker:
     def detect(self, _debugShow, frame, mp_image, data):
         result = self._landmarker.detect(mp_image)
         if(result == None):
-            return
+            return False
 
         if result.pose_landmarks == None or len(result.pose_landmarks) == 0:
-            return
+            return False
         
         pose_landmarks = result.pose_landmarks[0]
         if pose_landmarks == None:
-            return
+            return False
         
         #
         if len(pose_landmarks) != 33:
-            return
-        
-        # ランドマークからポーズの角度を計算
-        self.calcPose(pose_landmarks, data)
+            return False
         
         # デバッグ描画
         if(_debugShow):
@@ -88,9 +160,9 @@ class CPoseLandmarker:
             mouth_right_index    = 9
             mouth_left_index     = 10
 
-            for landmark in pose_landmarks:
-                x = int(w * landmark.x)
-                y = int(h * landmark.y)
+            for landmark in self._current_landmark:
+                x = int(w * landmark[0])
+                y = int(h * landmark[1])
 
                 color = (255, 0, 0)
 
@@ -102,8 +174,18 @@ class CPoseLandmarker:
                 cv2.circle(frame, (x, y), 5, color, -1)
 
                 index += 1
+        
+        # ランドマークからポーズの角度を計算
+        if(not self.calcPose(pose_landmarks, data)):
+            return False
+        
+        return True
 
     def calcPose(self, pose_landmarks, data):
+        #
+        if(not self.correctLandmarks(pose_landmarks)):
+            return False
+
         #
         nose_index           = 0
         right_eye_index      = 2
@@ -114,13 +196,13 @@ class CPoseLandmarker:
         left_shoulder_index  = 12
 
         #
-        nose_pos = self.getPos(pose_landmarks, nose_index)
-        right_eye_pos = self.getPos(pose_landmarks, right_eye_index)
-        left_eye_pos = self.getPos(pose_landmarks, left_eye_index)
-        mouth_right_pos = self.getPos(pose_landmarks, mouth_right_index)
-        mouth_left_pos = self.getPos(pose_landmarks, mouth_left_index)
-        right_shoulder_pos = self.getPos(pose_landmarks, right_shoulder_index)
-        left_shoulder_pos = self.getPos(pose_landmarks, left_shoulder_index)
+        nose_pos = self.getPos(nose_index)
+        right_eye_pos = self.getPos(right_eye_index)
+        left_eye_pos = self.getPos(left_eye_index)
+        mouth_right_pos = self.getPos(mouth_right_index)
+        mouth_left_pos = self.getPos(mouth_left_index)
+        right_shoulder_pos = self.getPos(right_shoulder_index)
+        left_shoulder_pos = self.getPos(left_shoulder_index)
 
         #
         HeadQuat = self.calcHeadRotate(right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos)
@@ -166,6 +248,37 @@ class CPoseLandmarker:
         data.extend(struct.pack('<f', RHandQuat.z))
         data.extend(struct.pack('<f', RHandQuat.w))
 
+        return True
+
+    def correctLandmarks(self, pose_landmarks):
+        # 位置の平均を取る
+        for i in range(0, len(pose_landmarks)):
+            landmark = pose_landmarks[i]
+            pos = np.array([ landmark.x, landmark.y, landmark.z ])
+
+            self._sum_of_landmark[i] += pos
+        
+        self._current_frame += 1
+
+        # 規定フレーム数を越したら現在の位置を更新する
+        if(self._current_frame >= self._max_frame):
+            self._current_frame = 0
+
+            for i in range(0, len(self._sum_of_landmark)):
+                pos = self._sum_of_landmark[i] / self._max_frame
+
+                # Zは捨てる
+                # pos[2] = 0.0
+
+                self._current_landmark[i] = pos
+                self._sum_of_landmark[i] = np.array([ 0.0, 0.0, 0.0 ])
+
+            # 平均位置が更新されたので次に進む
+            return True
+
+        return False
+
+
     def calcHeadRotate(self, right_eye_pos, left_eye_pos, mouth_right_pos, mouth_left_pos):
         eye_center = (left_eye_pos + right_eye_pos) * 0.5
         mouth_center = (mouth_left_pos + mouth_right_pos) * 0.5
@@ -199,9 +312,9 @@ class CPoseLandmarker:
 
         return Quat
     
-    def getPos(self, pose_landmarks, index):
-        landmark = pose_landmarks[index]
-        pos = np.array([ landmark.x, landmark.y, landmark.z ])
+    def getPos(self, index):
+        landmark = self._current_landmark[index]
+        pos = np.array([ landmark[0], landmark[1], landmark[2] ])
 
         # MediaPipeはXY成分は左上が(0, 0)で0~1の値をとる
         # Z成分は-1から1??
@@ -240,6 +353,9 @@ def main():
     frameIndex = 0
 
     while cap.isOpened():
+        # 60FPSで実行
+        # time.sleep(1.0 / 60.0)
+
         # Webカメラの映像を取得
         ret, frame = cap.read()
 
@@ -270,17 +386,18 @@ def main():
             data.extend(struct.pack('<i', frameIndex))
 
             # Pose検出
+            poseResult = False
             if(poseTask.IsLoaded()):
-                poseTask.detect(_debugShow, frame, mp_image, data)
+                poseResult = poseTask.detect(_debugShow, frame, mp_image, data)
 
             # フレームを画面に表示
             if(_debugShow):
                 cv2.imshow('WebCam Frame', frame)
 
             # データ送信
-            udp.Send(data)
-
-            frameIndex += 1
+            if(poseResult):
+                udp.Send(data)
+                frameIndex += 1
 
         else:
             break
