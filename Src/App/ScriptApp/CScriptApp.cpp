@@ -88,8 +88,8 @@ namespace app
 
 		// Live2Dモデルロード
 		// ToDo: これらの情報はシーンJSONのuserdataフィールドから取得するようにする(ユーザーがカスタマイズで好きな値を入れることのできるフィールド)
-		m_MyModelName = "Hiyori";
-		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, m_MyModelName, "Resources/User/Live2D/Hiyori/Hiyori.model3.json", "Idle", 0, "F01")) return false;
+		m_MyModelName = "Mao";
+		if (!m_Live2DEngine->LoadModel(pGraphicsAPI, m_MyModelName, "Resources/User/Live2D/Mao/Mao.model3.json", "Idle", 0, "exp_01")) return false;
 		m_Live2DEngine->SetPos(m_MyModelName, glm::vec3(0.0f, -1.25f, 4.75f));
 
 		return true;
@@ -140,12 +140,12 @@ namespace app
 		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_2)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 1);
 		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_3)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 2);
 		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_4)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 3);
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F01");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F02");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F03");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F04");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F05");
-		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression(m_MyModelName, "F06");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_5)) m_Live2DEngine->ChangeMotion(m_MyModelName, "TapBody", 4);
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_6)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_02");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_7)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_03");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_8)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_04");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_9)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_05");
+		else if (InputState->IsKeyUp(input::EKeyType::KEY_TYPE_0)) m_Live2DEngine->ChangeExpression(m_MyModelName, "exp_06");
 
 		if (!m_MainFrameRenderer->Update(pGraphicsAPI, pPhysicsEngine, pLoadWorker, m_MainCamera, m_Projection, m_DrawInfo, InputState)) return false;
 

@@ -201,6 +201,9 @@
     <ClCompile Include="Src\Live2D\CLive2DSkeleton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Src\Live2D\Renderer\CLive2DDrawObj.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\App\ScriptApp\CScriptApp.h">
@@ -423,6 +426,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Src\Live2D\CLive2DSkeleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Live2D\Renderer\CLive2DDrawObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

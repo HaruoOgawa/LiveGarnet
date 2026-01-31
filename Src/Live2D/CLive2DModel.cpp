@@ -15,6 +15,7 @@
 #elif USE_VULKAN
 #elif USE_WEBGPU
 #endif
+#include "Renderer/CLive2DDrawObj.h"
 
 namespace livegarnet
 {
@@ -188,7 +189,15 @@ namespace livegarnet
 		CubismMatrix44 MVPMat;
 		MVPMat.SetMatrix(&MVPMat_glm[0][0]);
 
+#ifdef USE_DRAW_SORT
+		float ToCameraDist = glm::distance(m_Transform.GetPos(), Camera->GetPos());
+
+		std::shared_ptr<CLive2DDrawObj> DrawObj = std::make_shared<CLive2DDrawObj>(2000, ToCameraDist, MVPMat, m_Renderer.get());
+
+		if (!pGraphicsAPI->AddDrawObj(DrawObj)) return false;
+#else
 		if (!m_Renderer->Draw(MVPMat)) return false;
+#endif // USE_DRAW_SORT
 
 		return true;
 	}
