@@ -1,4 +1,5 @@
 # LiveGarnet
+[![IMAGE ALT TEXT HERE](https://github.com/user-attachments/assets/cd121296-8e0d-48b4-9d7b-1981aa59175b)](https://www.youtube.com/watch?v=OW3TKoJMNUw)
 ## 導入手順
 1. 以下のコマンドを実行
 ```
